@@ -33,8 +33,4 @@ Route::resource('loan', LoanController::class);
 Route::resource('user', UserController::class);
 Route::resource('employee', EmployeeController::class);
 Route::resource('deposit', DepositController::class);
-
-Route::prefix('payment')->group(function () {
-    Route::get('/', [PaymentController::class, 'listOfPayments']);
-    Route::get('/{id}', [PaymentController::class, 'detailsOfPayment']);
-});
+Route::resource('payment', PaymentController::class);
