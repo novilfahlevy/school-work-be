@@ -29,10 +29,7 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', [PassportAuthController::class, 'login']);
 });
 
-Route::prefix('loan')->group(function () {
-    Route::get('/', [LoanController::class, 'listOfLoans']);
-    Route::get('/{id}', [LoanController::class, 'detailsOfLoan']);
-});
+Route::resource('loan', LoanController::class);
 
 Route::prefix('user')->group(function () {
     Route::get('/', [UserController::class, 'listOfUsers']);
