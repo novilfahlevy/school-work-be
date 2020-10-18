@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\Loan;
-use Carbon\Carbon;
+use App\Models\Deposit;
 use Illuminate\Http\Request;
 
-class LoanController extends Controller
+class DepositController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,9 +15,9 @@ class LoanController extends Controller
      */
     public function index()
     {
-        $data = Loan::listOfLoans();
+        $data = Deposit::listOfDeposits();
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data pinjaman', 'loans' => $data], 200);
+        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data setoran', 'deposits' => $data], 200);
     }
 
     /**
@@ -50,9 +49,9 @@ class LoanController extends Controller
      */
     public function show($id)
     {
-        $data = Loan::detailsOfLoan($id);
+        $data = Deposit::detailsOfDeposit($id);
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data pinjaman', 'loans' => $data], 200);
+        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil detail setoran', 'deposit' => $data], 200);
     }
 
     /**

@@ -1,12 +1,12 @@
 <?php
 
-use App\Http\Controllers\Api\v1\DepositController;
-use App\Http\Controllers\Api\v1\LoanController;
-use App\Http\Controllers\Api\v1\PassportAuthController;
-use App\Http\Controllers\Api\v1\UserController;
+use App\Http\Controllers\API\DepositController;
+use App\Http\Controllers\API\LoanController;
+use App\Http\Controllers\API\PassportAuthController;
+use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\v1\EmployeeController;
+use App\Http\Controllers\API\EmployeeController;
 use App\Http\Controllers\PaymentController;
 
 /*
@@ -29,8 +29,10 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', [PassportAuthController::class, 'login']);
 });
 
-Route::resource('loan', LoanController::class);
-Route::resource('user', UserController::class);
-Route::resource('employee', EmployeeController::class);
-Route::resource('deposit', DepositController::class);
-Route::resource('payment', PaymentController::class);
+Route::apiResources([
+    'loan' => LoanController::class,
+    'user' => UserController::class,
+    'employee' => EmployeeController::class,
+    'deposit' => DepositController::class,
+    'payment' => PaymentController::class,
+]);

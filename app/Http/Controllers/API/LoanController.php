@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Loan;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class LoanController extends Controller
@@ -15,9 +16,9 @@ class LoanController extends Controller
      */
     public function index()
     {
-        $data = User::listOfUsers();
+        $data = Loan::listOfLoans();
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data pengguna', 'users' => $data], 200);
+        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data pinjaman', 'loans' => $data], 200);
     }
 
     /**
@@ -49,9 +50,9 @@ class LoanController extends Controller
      */
     public function show($id)
     {
-        $data = User::detailsOfUser($id);
+        $data = Loan::detailsOfLoan($id);
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil data detail pengguna', 'user' => $data], 200);
+        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data pinjaman', 'loans' => $data], 200);
     }
 
     /**

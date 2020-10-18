@@ -1,14 +1,13 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\Deposit;
+use App\Models\User;
 use Illuminate\Http\Request;
 
-class DepositController extends Controller
+class UserController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -16,9 +15,9 @@ class DepositController extends Controller
      */
     public function index()
     {
-        $data = Deposit::listOfDeposits();
+        $data = User::listOfUsers();
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data setoran', 'deposits' => $data], 200);
+        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data pengguna', 'users' => $data], 200);
     }
 
     /**
@@ -50,9 +49,9 @@ class DepositController extends Controller
      */
     public function show($id)
     {
-        $data = Deposit::detailsOfDeposit($id);
+        $data = User::detailsOfUser($id);
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil detail setoran', 'deposit' => $data], 200);
+        return response()->json(['status' => 200, 'message' => 'Berhasil data detail pengguna', 'user' => $data], 200);
     }
 
     /**
