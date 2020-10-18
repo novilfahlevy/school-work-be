@@ -32,11 +32,7 @@ Route::prefix('auth')->group(function () {
 Route::resource('loan', LoanController::class);
 Route::resource('user', UserController::class);
 Route::resource('employee', EmployeeController::class);
-
-Route::prefix('deposit')->group(function () {
-    Route::get('/', [DepositController::class, 'listOfDeposits']);
-    Route::get('/{id}', [DepositController::class, 'detailsOfDeposit']);
-});
+Route::resource('deposit', DepositController::class);
 
 Route::prefix('payment')->group(function () {
     Route::get('/', [PaymentController::class, 'listOfPayments']);
