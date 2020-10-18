@@ -62,10 +62,12 @@ class Loan extends Model
         $data['userPhoneNumber'] = $loan_details->users->phone_number;
         $data['startDate'] = indonesian_date_format($loan_details->start_date);
         $data['dueDate'] = indonesian_date_format($loan_details->due_date);
-        $data['loanDate'] = !is_null($loan_details->loan_date) ? indonesian_date_format($loan_details->loan_date) : null;
+        $data['paidDate'] = !is_null($loan_details->loan_date) ? indonesian_date_format($loan_details->loan_date) : null;
         $data['totalLoan'] = $loan_details->total_loan;
         $data['paymentCount'] = $loan_details->payment_counts;
+        $data['totalPaymentInterest'] = $loan_details->total_payment_interest;
         $data['totalPayment'] = $loan_details->total_payment;
+        $data['totalPaymentWithInterest'] = $loan_details->total_payment_with_interest;
         $data['status'] = get_loan_status($loan_details);
         $data['employeeName'] = $loan_details->employees()->first()->name;
         $data['employeeId'] = $loan_details->employees()->first()->id;
