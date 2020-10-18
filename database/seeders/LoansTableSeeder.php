@@ -20,8 +20,7 @@ class LoansTableSeeder extends Seeder
             'employee_id' => mt_rand(1, 28),
             'start_date' => Carbon::createFromDate(date('Y'), mt_rand(1, 6), mt_rand(1, date('d'))),
             'due_date' => Carbon::createFromDate(date('Y'), mt_rand(6, 12), mt_rand(1, date('d'))),
-            'paid_date' => null,
-            'interest_percent' => 10,
+            'loan_interest' => 10,
             'total_loan' => 1000000,
             'total_loan_with_interest' =>  1100000,
             'total_payment' => 500000,
@@ -30,7 +29,6 @@ class LoansTableSeeder extends Seeder
             'payment_counts' => 2,
             'status' => 0,
             'is_approve' => 0,
-            'loan_date' => null,
             'created_at' => now(),
             'updated_at' => now()
         ]);
@@ -40,8 +38,7 @@ class LoansTableSeeder extends Seeder
             'employee_id' => mt_rand(1, 28),
             'start_date' => Carbon::createFromDate(date('Y'), mt_rand(1, 6), mt_rand(1, date('d'))),
             'due_date' => Carbon::createFromDate(date('Y'), mt_rand(6, 12), mt_rand(1, date('d'))),
-            'paid_date' => null,
-            'interest_percent' => 10,
+            'loan_interest' => 10,
             'total_loan' => 5000000,
             'total_loan_with_interest' =>  5500000,
             'total_payment' => 10000000,
@@ -50,7 +47,6 @@ class LoansTableSeeder extends Seeder
             'payment_counts' => 5,
             'status' => 1,
             'is_approve' => 0,
-            'loan_date' => null,
             'created_at' => now(),
             'updated_at' => now()
         ]);
@@ -60,8 +56,7 @@ class LoansTableSeeder extends Seeder
             'employee_id' => mt_rand(1, 28),
             'start_date' => Carbon::createFromDate(date('Y'), mt_rand(1, 6), mt_rand(1, date('d'))),
             'due_date' => Carbon::createFromDate(date('Y'), mt_rand(6, 12), mt_rand(1, date('d'))),
-            'paid_date' => null,
-            'interest_percent' => 10,
+            'loan_interest' => 10,
             'total_loan' => 20000000,
             'total_loan_with_interest' =>  22000000,
             'total_payment' => 5000000,
@@ -70,7 +65,6 @@ class LoansTableSeeder extends Seeder
             'payment_counts' => 4,
             'status' => 2,
             'is_approve' => 1,
-            'loan_date' => null,
             'created_at' => now(),
             'updated_at' => now()
         ]);
