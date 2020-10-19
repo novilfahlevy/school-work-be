@@ -65,6 +65,8 @@ class Loan extends Model
         $data['paidDate'] = !is_null($loan_details->loan_date) ? indonesian_date_format($loan_details->loan_date) : null;
         $data['totalLoan'] = $loan_details->total_loan;
         $data['paymentCount'] = $loan_details->payment_counts;
+        $data['loanInterest'] = $loan_details->loan_interest;
+        $data['loanWithInterest'] = $loan_details->total_loan_with_interest;
         $data['totalPaymentInterest'] = $loan_details->total_payment_interest;
         $data['totalPayment'] = $loan_details->total_payment;
         $data['totalPaymentWithInterest'] = $loan_details->total_payment_with_interest;
