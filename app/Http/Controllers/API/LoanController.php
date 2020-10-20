@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Loan;
 use App\Models\Payment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoanController extends Controller
 {
@@ -39,6 +40,8 @@ class LoanController extends Controller
      */
     public function store(Request $request)
     {
+        $user = Auth::user();
+
         $loan = new Loan;
         $loan->due_date = $request->dueDate;
         $loan->loan_interest = $request->loanInterest;
@@ -49,12 +52,13 @@ class LoanController extends Controller
         $loan->total_payment = $request->totalPayment;
         $loan->total_payment_interest = $request->totalPaymentInterest;
         $loan->total_payment_with_interest = $request->totalPayment + $request->totalPaymentInterest;
+        $payments = $request->payments;
         $loan->user_id = $request->userId;
         $loan->employee_id = auth()->id();
-        $loan->status = 0;
+        $loan->status = $user->roles->first()->id !== 1 ? 0 : 1;
         $loan->save();
 
-        Payment::storePaymentBasedOnDataFromLoan($request->dueDate, $loan->id, $request->paymentCounts);
+        Payment::storePaymentBasedOnDataFromLoan($payments, $request->paymentCounts, $loan->id);
 
         return response()->json(['status' => 201, 'message' => 'Berhasil menambah pinjaman'], 201);
     }
