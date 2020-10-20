@@ -62,7 +62,7 @@ class User extends Authenticatable
     {
         $users = User::whereHas('roles', function ($query) {
             $query->where('role_id', 3);
-        })->get();
+        })->orderBy('name', 'ASC')->get();
 
         foreach ($users as $key => $user) {
             $data[$key]['id'] = $user->id;
@@ -121,7 +121,7 @@ class User extends Authenticatable
     {
         $employees = User::whereHas('roles', function ($query) {
             $query->where('role_id', 2);
-        })->get();
+        })->orderBy('name', 'ASC')->get();
 
         foreach ($employees as $key => $employee) {
             $data[$key]['id'] = $employee->id;
