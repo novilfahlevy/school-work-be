@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Loan;
-use Carbon\Carbon;
+use App\Models\Payment;
 use Illuminate\Http\Request;
 
 class LoanController extends Controller
@@ -39,7 +39,24 @@ class LoanController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $loan = new Loan;
+        $loan->due_date = $request->dueDate;
+        $loan->loan_interest = $request->loanInterest;
+        $loan->payment_counts = $request->paymentCounts;
+        $loan->start_date = $request->startDate;
+        $loan->total_loan = $request->totalLoan;
+        $loan->total_loan_with_interest = $request->totalLoanWithInterest;
+        $loan->total_payment = $request->totalPayment;
+        $loan->total_payment_interest = $request->totalPaymentInterest;
+        $loan->total_payment_with_interest = $request->totalPayment + $request->totalPaymentInterest;
+        $loan->user_id = $request->userId;
+        $loan->employee_id = auth()->id();
+        $loan->status = 0;
+        $loan->save();
+
+        Payment::storePaymentBasedOnDataFromLoan($request->dueDate, $loan->id, $request->paymentCounts);
+
+        return response()->json(['status' => 201, 'message' => 'Berhasil menambah pinjaman'], 201);
     }
 
     /**

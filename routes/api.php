@@ -29,10 +29,12 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', [PassportAuthController::class, 'login']);
 });
 
-Route::apiResources([
-    'loan' => LoanController::class,
-    'user' => UserController::class,
-    'employee' => EmployeeController::class,
-    'deposit' => DepositController::class,
-    'payment' => PaymentController::class,
-]);
+Route::middleware('auth:api')->group(function () {
+    Route::apiResources([
+        'loan' => LoanController::class,
+        'user' => UserController::class,
+        'employee' => EmployeeController::class,
+        'deposit' => DepositController::class,
+        'payment' => PaymentController::class,
+    ]);
+});

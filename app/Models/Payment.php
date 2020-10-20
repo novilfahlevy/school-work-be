@@ -65,4 +65,16 @@ class Payment extends Model
 
         return $data;
     }
+
+    public static function storePaymentBasedOnDataFromLoan($due_date, $loan_id, $payment_counts)
+    {
+        for ($i = 1; $i <= $payment_counts; $i++) {
+            $payment = new Payment;
+            $payment->loan_id = $loan_id;
+            $payment->due_date = $due_date;
+            $payment->payment_number = $i;
+            $payment->status = 0;
+            $payment->save();
+        }
+    }
 }
