@@ -64,6 +64,9 @@ if (!function_exists('get_loan_status')) {
      */
     function get_loan_status($loan)
     {
+        // status 0 = belum divalidasi
+        //status 2 = belum lunas
+        //status 1 = lunas
         if ($loan->status === 0 && $loan->is_approve === NULL) {
             $status = 'Belum Divalidasi';
         }

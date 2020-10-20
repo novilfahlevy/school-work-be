@@ -55,7 +55,8 @@ class LoanController extends Controller
         $payments = $request->payments;
         $loan->user_id = $request->userId;
         $loan->employee_id = auth()->id();
-        $loan->status = $user->roles->first()->id !== 1 ? 0 : 1;
+        $loan->is_approve = $user->roles->first()->id !== 1 ? 0 : 1; //sudah divalidasi
+        $loan->status = 2; //status 2= belum lunas
         $loan->save();
 
         Payment::storePaymentBasedOnDataFromLoan($payments, $request->paymentCounts, $loan->id);
