@@ -33,7 +33,7 @@ class Loan extends Model
      */
     public static function listOfLoans()
     {
-        $loans = Loan::all();
+        $loans = Loan::latest('created_at')->get();
 
         foreach ($loans as $key => $loan) {
             $data[$key]['id'] = $loan->id;

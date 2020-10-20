@@ -31,7 +31,7 @@ class Payment extends Model
      */
     public static function listOfPayments()
     {
-        $payments = Payment::all();
+        $payments = Payment::latest('created_at')->get();
 
         foreach ($payments as $key => $payment) {
             $data[$key]['id'] = $payment->id;
