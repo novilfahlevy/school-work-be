@@ -16,6 +16,7 @@ class CreatePaymentsTable extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('loan_id');
+            $table->unsignedBigInteger('employee_id')->nullable();
             $table->dateTime('due_date');
             $table->dateTime('payment_date')->nullable();
             $table->integer('payment_number');
@@ -24,6 +25,7 @@ class CreatePaymentsTable extends Migration
             $table->timestamps();
 
             $table->foreign('loan_id')->references('id')->on('loans')->cascadeOnDelete();
+            $table->foreign('employee_id')->references('id')->on('users')->cascadeOnDelete();
         });
     }
 
