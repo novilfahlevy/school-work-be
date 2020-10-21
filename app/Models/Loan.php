@@ -96,6 +96,8 @@ class Loan extends Model
             $data[$key]['status'] = get_payment_status($payment_detail);
             $data[$key]['employeeName'] = $loan_details->employees()->first()->name;
             $data[$key]['description'] = $payment_detail->description;
+            $data[$key]['something'] = date('Y-m-d H:i:s') . " - " .  $payment_detail->due_date;
+            $data[$key]['made'] = date('Y-m-d H:i:s') > $payment_detail->due_date;
         }
 
         return $data;

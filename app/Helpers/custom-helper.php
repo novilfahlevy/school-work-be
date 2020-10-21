@@ -35,22 +35,15 @@ if (!function_exists('get_payment_statuses')) {
      */
     function get_payment_status($payment)
     {
-        if ($payment->status === 0 && date('d-m-Y') > indonesian_date_format($payment->due_date)) {
+        if ($payment->status === 0 && date('Y-m-d') > $payment->due_date) {
             $status = 'Belum Lunas Terlambat';
-        }
-
-        if ($payment->status === 1 && date('d-m-Y') > indonesian_date_format($payment->due_date)) {
+        } else if ($payment->status === 1 && date('d-m-Y') > indonesian_date_format($payment->due_date)) {
             $status = 'Lunas Terlambat';
-        }
-
-        if ($payment->status === 1) {
+        } else if ($payment->status === 1) {
             $status = 'Lunas';
-        }
-
-        if ($payment->status === 0) {
+        } else if ($payment->status === 0) {
             $status = 'Belum Lunas';
         }
-
         return $status;
     }
 }
