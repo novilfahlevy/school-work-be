@@ -35,22 +35,15 @@ if (!function_exists('get_payment_statuses')) {
      */
     function get_payment_status($payment)
     {
-        if ($payment->status === 0 && date('d-m-Y') > indonesian_date_format($payment->due_date)) {
+        if ($payment->status === 0 && date('Y-m-d') > $payment->due_date) {
             $status = 'Belum Lunas Terlambat';
-        }
-
-        if ($payment->status === 1 && date('d-m-Y') > indonesian_date_format($payment->due_date)) {
+        } else if ($payment->status === 1 && date('Y-m-d') <  $payment->payment_date) {
             $status = 'Lunas Terlambat';
-        }
-
-        if ($payment->status === 1) {
+        } else if ($payment->status === 1) {
             $status = 'Lunas';
-        }
-
-        if ($payment->status === 0) {
+        } else if ($payment->status === 0) {
             $status = 'Belum Lunas';
         }
-
         return $status;
     }
 }
@@ -69,17 +62,11 @@ if (!function_exists('get_loan_status')) {
         //status 1 = lunas
         if ($loan->status === 0 && $loan->is_approve === NULL) {
             $status = 'Belum Divalidasi';
-        }
-
-        if ($loan->status === 1 && $loan->is_approve === 1) {
+        } else if ($loan->status === 1 && $loan->is_approve === 1) {
             $status = 'Lunas';
-        }
-
-        if ($loan->status === 2 && $loan->is_approve === 1) {
+        } else if ($loan->status === 2 && $loan->is_approve === 1) {
             $status = 'Belum Lunas';
-        }
-
-        if ($loan->is_approve === 0) {
+        } else if ($loan->is_approve === 0) {
             $status = 'Ditolak';
         }
 
