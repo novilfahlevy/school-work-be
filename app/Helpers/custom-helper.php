@@ -37,7 +37,7 @@ if (!function_exists('get_payment_statuses')) {
     {
         if ($payment->status === 0 && date('Y-m-d') > $payment->due_date) {
             $status = 'Belum Lunas Terlambat';
-        } else if ($payment->status === 1 && date('d-m-Y') > indonesian_date_format($payment->due_date)) {
+        } else if ($payment->status === 1 && date('Y-m-d') <  $payment->payment_date) {
             $status = 'Lunas Terlambat';
         } else if ($payment->status === 1) {
             $status = 'Lunas';

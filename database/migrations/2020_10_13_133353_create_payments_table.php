@@ -19,7 +19,7 @@ class CreatePaymentsTable extends Migration
             $table->dateTime('due_date');
             $table->dateTime('payment_date')->nullable();
             $table->integer('payment_number');
-            $table->tinyInteger('status')->comment('0 = belum lunas, 1 = lunas, 2 = lunas terlambat, 3 = belum lunas terlambat');
+            $table->tinyInteger('status')->comment('0 = belum lunas, 1 = lunas');
             $table->text('description')->nullable();
             $table->timestamps();
 
