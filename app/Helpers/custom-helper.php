@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\Carbon;
+
 if (!function_exists('indonesian_date_format')) {
     /**
      * Change database date to Indonesian date format
@@ -37,7 +39,7 @@ if (!function_exists('get_payment_statuses')) {
     {
         if ($payment->status === 0 && date('Y-m-d') > $payment->due_date) {
             $status = 'Belum Lunas Terlambat';
-        } else if ($payment->status === 1 && date('Y-m-d') <  $payment->payment_date) {
+        } else if ($payment->status === 1 && $payment->due_date <  $payment->payment_date) {
             $status = 'Lunas Terlambat';
         } else if ($payment->status === 1) {
             $status = 'Lunas';

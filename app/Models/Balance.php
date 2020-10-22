@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Balance extends Model
 {
     use HasFactory;
+    protected $fillable = ['balance', 'changed_at'];
+    public function balanceable()
+    {
+        return $this->morphTo();
+    }
 }

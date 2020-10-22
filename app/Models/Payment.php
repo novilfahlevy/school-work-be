@@ -9,6 +9,10 @@ class Payment extends Model
 {
     use HasFactory;
 
+    public function balance()
+    {
+        return $this->morphOne('App\Models\Balance', 'balanceable');
+    }
     public function users()
     {
         return $this->hasOne('App\Models\User', 'id');
@@ -19,7 +23,7 @@ class Payment extends Model
         return $this->hasOne('App\Models\User', 'id');
     }
 
-    public function loans()
+    public function loan()
     {
         return $this->belongsTo('App\Models\Loan');
     }

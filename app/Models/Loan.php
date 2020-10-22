@@ -11,6 +11,10 @@ class Loan extends Model
 {
     use HasFactory;
 
+    public function balance()
+    {
+        return $this->morphOne('App\Models\Balance', 'balanceable');
+    }
     public function users()
     {
         return $this->hasOne('App\Models\User', 'id', 'user_id');

@@ -37,4 +37,6 @@ Route::middleware('auth:api')->group(function () {
         'deposit' => DepositController::class,
         'payment' => PaymentController::class,
     ]);
+    Route::put('loan/status/{id}', [LoanController::class, 'status'])->name("loan.status");
+    Route::put('payment/status/{id}', [PaymentController::class, 'status']);
 });
