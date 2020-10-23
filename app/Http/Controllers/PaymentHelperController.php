@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Payment;
 
 class PaymentHelperController extends Controller
 {
@@ -36,7 +37,7 @@ class PaymentHelperController extends Controller
         $payment->status = $request->status;
         $payment->description = $request->desc;
         $payment->update();
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengubah status angsuran'], 200);
+        return response()->json(['status' => 200, 'message' => 'Berhasil mengubah status angsuran!'], 200);
     }
 
     public static function storePaymentBasedOnDataFromLoan($payments, $payment_counts, $loan_id)
