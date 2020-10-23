@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\ApiHelperController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Payment;
@@ -9,6 +10,13 @@ use App\Models\Balance;
 
 class PaymentController extends Controller
 {
+    private $api;
+
+    public function __construct()
+    {
+        $this->api = new ApiHelperController;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -31,7 +39,13 @@ class PaymentController extends Controller
             ];
         }
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data angsuran', 'payments' => $data], 200);
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->success_message,
+            'payments' => $data
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 
     /**
@@ -79,7 +93,13 @@ class PaymentController extends Controller
             'userId' => $payment->users()->first()->id
         ];
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil detail angsuran', 'payment' => $data], 200);
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->success_message,
+            'payment' => $data
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 
     /**

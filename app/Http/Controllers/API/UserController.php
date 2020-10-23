@@ -7,14 +7,17 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\LoanHelperController;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\ApiHelperController;
 
 class UserController extends Controller
 {
     private $loan;
+    private $api;
 
     public function __construct()
     {
         $this->loan = new LoanHelperController;
+        $this->api = new ApiHelperController;
     }
 
     /**
@@ -39,7 +42,13 @@ class UserController extends Controller
             ];
         }
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data pengguna', 'users' => $data], 200);
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->success_message,
+            'users' => $data
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 
     /**
@@ -74,7 +83,12 @@ class UserController extends Controller
 
         $user->roles()->sync(3);
 
-        return response()->json(['status' => 201, 'message' => 'Data berhasil ditambahkan!'], 201);
+        $responses = [
+            'status' => $this->api->created_code,
+            'message' => $this->api->created_message
+        ];
+
+        return response()->json($responses, $this->api->created_code);
     }
 
     /**
@@ -99,7 +113,13 @@ class UserController extends Controller
             'loans' => $this->loan->getLoansDataByUserId($user->id)
         ];
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil data detail pengguna', 'user' => $data], 200);
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->success_message,
+            'user' => $data
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 
     /**
@@ -134,7 +154,12 @@ class UserController extends Controller
         $user->job = $request->job ?? $user->job;
         $user->save();
 
-        return response()->json(['status' => 200, 'message' => 'Data berhasil diubah!'], 200);
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->updated_message
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 
     /**
@@ -147,6 +172,11 @@ class UserController extends Controller
     {
         User::find($id)->delete();
 
-        return response()->json(['status' => 200, 'message' => 'Data berhasil dihapus!'], 200);
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->deleted_message
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 }

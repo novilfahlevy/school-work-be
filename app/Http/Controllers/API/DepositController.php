@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\ApiHelperController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\DepositHelperController;
 use App\Models\Deposit;
@@ -10,10 +11,12 @@ use Illuminate\Http\Request;
 class DepositController extends Controller
 {
     private $deposit;
+    private $api;
 
     public function __construct()
     {
         $this->deposit = new DepositHelperController;
+        $this->api = new ApiHelperController;
     }
 
     /**
@@ -35,7 +38,13 @@ class DepositController extends Controller
             ];
         }
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data setoran', 'deposits' => $data], 200);
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->success_message,
+            'deposits' => $data
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 
     /**
@@ -69,14 +78,21 @@ class DepositController extends Controller
     {
         $deposit = Deposit::find($id);
 
-        $data['id'] = $deposit->id;
-        $data['employeeName'] = $deposit->users()->first()->name;
-        $data['totalDeposit'] = $deposit->total_deposit;
-        $data['depositDate'] = indonesian_date_format($deposit->deposit_date);
-        $data['status'] = $this->deposit->getDepositStatuses($deposit);
+        $data = [
+            'id' => $deposit->id,
+            'employeeName' => $deposit->users()->first()->name,
+            'totalDeposit' => $deposit->total_deposit,
+            'depositDate' => indonesian_date_format($deposit->deposit_date),
+            'status' => $this->deposit->getDepositStatuses($deposit)
+        ];
 
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->success_message,
+            'deposit' => $data
+        ];
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil detail setoran', 'deposit' => $data], 200);
+        return response()->json($responses, $this->api->success_code);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\ApiHelperController;
 use App\Http\Controllers\BalanceHelperController;
 use App\Http\Controllers\Controller;
 use App\Models\Loan;
@@ -15,11 +16,13 @@ class LoanController extends Controller
 {
     private $payment;
     private $balance;
+    private $api;
 
     public function __construct()
     {
         $this->payment = new PaymentHelperController;
         $this->balance = new BalanceHelperController;
+        $this->api = new ApiHelperController;
     }
 
     /**
@@ -43,7 +46,13 @@ class LoanController extends Controller
             ];
         }
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data pinjaman', 'loans' => $data], 200);
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->success_message,
+            'loans' => $data
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 
     /**
@@ -90,7 +99,12 @@ class LoanController extends Controller
         if ($user->roles->first()->id === 1) $this->balance->createBalance($loan);
         $this->payment->storePaymentBasedOnDataFromLoan($payments, $request->paymentCounts, $loan->id);
 
-        return response()->json(['status' => 201, 'message' => 'Berhasil menambah pinjaman'], 201);
+        $responses = [
+            'status' => $this->api->created_code,
+            'message' => $this->api->created_message
+        ];
+
+        return response()->json($responses, $this->api->created_code);
     }
 
     /**
@@ -124,7 +138,13 @@ class LoanController extends Controller
             'payments' => $this->payment->loanPaymentDetails($loan)
         ];
 
-        return response()->json(['status' => 200, 'message' => 'Data berhasil diambil!', 'loans' => $data], 200);
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->created_message,
+            'loan' => $data
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 
     /**
@@ -160,6 +180,11 @@ class LoanController extends Controller
     {
         Loan::find($id)->delete();
 
-        return response()->json(['status' => 200, 'message' => 'Data berhasil dihapus!'], 200);
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->deleted_message
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 }

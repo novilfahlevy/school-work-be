@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Helper\Helper;
+use App\Http\Controllers\ApiHelperController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\DepositHelperController;
 use App\Models\Deposit;
@@ -12,10 +14,12 @@ use Illuminate\Support\Facades\Hash;
 class EmployeeController extends Controller
 {
     private $deposit;
+    private $api;
 
     public function __construct()
     {
         $this->deposit = new DepositHelperController;
+        $this->api = new ApiHelperController;
     }
 
     /**
@@ -40,7 +44,13 @@ class EmployeeController extends Controller
             ];
         }
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data pegawai', 'users' => $data], 200);
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->success_message,
+            'users' => $data
+        ];
+
+        return response()->json($responses, $this->success_code);
     }
 
     /**
@@ -75,7 +85,12 @@ class EmployeeController extends Controller
 
         $user->roles()->sync($request->role);
 
-        return response()->json(['status' => 201, 'message' => 'Data berhasil ditambahkan!'], 201);
+        $responses = [
+            'status' => $this->api->created_code,
+            'message' => $this->api->created_message
+        ];
+
+        return response()->json($responses, $this->api->created_code);
     }
 
     /**
@@ -100,7 +115,13 @@ class EmployeeController extends Controller
             'deposits' => $this->deposit->getDepositDataByUserId($employee->id)
         ];
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data!', 'user' => $data], 200);
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->success_message,
+            'user' => $data
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 
     /**
@@ -135,7 +156,12 @@ class EmployeeController extends Controller
         $employee->job = $request->job ?? $employee->job;
         $employee->save();
 
-        return response()->json(['status' => 200, 'message' => 'Data berhasil diubah!'], 200);
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->updated_message
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 
     /**
@@ -148,6 +174,11 @@ class EmployeeController extends Controller
     {
         User::find($id)->delete();
 
-        return response()->json(['status' => 200, 'message' => 'Data berhasil dihapus!'], 200);
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->deleted_message
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 }
