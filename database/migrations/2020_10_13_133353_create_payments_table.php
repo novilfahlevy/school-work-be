@@ -17,8 +17,8 @@ class CreatePaymentsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('loan_id');
             $table->unsignedBigInteger('employee_id')->nullable();
-            $table->dateTime('due_date');
-            $table->dateTime('payment_date')->nullable();
+            $table->date('due_date');
+            $table->date('payment_date')->nullable();
             $table->integer('payment_number');
             $table->tinyInteger('status')->comment('0 = belum lunas, 1 = lunas, 2 = lunas terlambat, 3 = belum lunas terlambat');
             $table->text('description')->nullable();
