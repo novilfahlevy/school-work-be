@@ -1,14 +1,15 @@
 <?php
 
 use App\Http\Controllers\API\DepositController;
-use App\Http\Controllers\API\LoanController as APILoanController;
+use App\Http\Controllers\API\LoanController;
 use App\Http\Controllers\API\PassportAuthController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\EmployeeController;
-use App\Http\Controllers\API\PaymentController as APIPaymentController;
-use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\API\PaymentController;
+use App\Http\Controllers\PaymentHelperController;
+use App\Http\Controllers\LoanHelperController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,8 +37,9 @@ Route::middleware('auth:api')->group(function () {
         'user' => UserController::class,
         'employee' => EmployeeController::class,
         'deposit' => DepositController::class,
-        'payment' => APIPaymentController::class,
+        'payment' => PaymentController::class,
     ]);
-    Route::put('loan/status/{id}', [LoanController::class, 'status'])->name("loan.status");
-    Route::put('payment/status/{id}', [PaymentController::class, 'status']);
+
+    Route::put('loan/status/{id}', [LoanHelperController::class, 'status'])->name("loan.status");
+    Route::put('payment/status/{id}', [PaymentHelperController::class, 'status']);
 });
