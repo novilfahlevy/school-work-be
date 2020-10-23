@@ -74,7 +74,7 @@ class UserController extends Controller
 
         $user->roles()->sync(3);
 
-        return response()->json(['status' => 200, 'message' => 'Data berhasil ditambahkan!'], 200);
+        return response()->json(['status' => 201, 'message' => 'Data berhasil ditambahkan!'], 201);
     }
 
     /**
