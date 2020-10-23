@@ -29,6 +29,7 @@ class CreateLoansTable extends Migration
             $table->integer('payment_counts');
             $table->tinyInteger('status')->comment('0 = process, 1 = lunas, 2 = belum lunas');
             $table->boolean('is_approve')->nullable();
+            $table->softDeletes();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
