@@ -40,6 +40,6 @@ Route::middleware('auth:api')->group(function () {
         'payments' => PaymentController::class,
     ]);
 
-    Route::put('loan/status/{id}', [LoanHelperController::class, 'status'])->name("loan.status");
-    Route::put('payment/status/{id}', [PaymentHelperController::class, 'status']);
+    Route::put('loans/status/{id}', [LoanHelperController::class, 'status'])->name("loan.status");
+    Route::put('payments/status/{id}', [PaymentHelperController::class, 'status']);
 });
