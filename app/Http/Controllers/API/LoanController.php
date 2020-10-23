@@ -2,15 +2,26 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\BalanceHelperController;
 use App\Http\Controllers\Controller;
 use App\Models\Loan;
 use App\Models\Payment;
 use App\Models\Balance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\PaymentHelperController;
 
 class LoanController extends Controller
 {
+    private $payment;
+    private $balance;
+
+    public function __construct()
+    {
+        $this->payment = new PaymentHelperController;
+        $this->balance = new BalanceHelperController;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -51,22 +62,6 @@ class LoanController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    private function createBalance($loan)
-    {
-        $balance = Balance::orderBy("id", "desc")->first();
-        $current_balance = $balance->balance - $loan->total_loan;
-        $loan->balance()->create([
-            'balance' => $current_balance,
-            'changed_at' => date('Y-m-d')
-        ]);
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $user = Auth::user();
@@ -92,8 +87,8 @@ class LoanController extends Controller
         $loan->is_approve = $user->roles->first()->id !== 1 ? null : 1; //sudah divalidasi
         $loan->status = $user->roles->first()->id !== 1 ? 0 : 2; //status 2= belum lunas 0 = proses
         $loan->save();
-        if ($user->roles->first()->id === 1) $this->createBalance($loan);
-        Payment::storePaymentBasedOnDataFromLoan($payments, $request->paymentCounts, $loan->id);
+        if ($user->roles->first()->id === 1) $this->balance->createBalance($loan);
+        $this->payment->storePaymentBasedOnDataFromLoan($payments, $request->paymentCounts, $loan->id);
 
         return response()->json(['status' => 201, 'message' => 'Berhasil menambah pinjaman'], 201);
     }
@@ -126,7 +121,7 @@ class LoanController extends Controller
             'status' => get_loan_status($loan),
             'employeeName' => $loan->employees()->first()->name,
             'employeeId' => $loan->employees()->first()->id,
-            'payments' => Loan::loanPaymentDetails($loan)
+            'payments' => $this->payment->loanPaymentDetails($loan)
         ];
 
         return response()->json(['status' => 200, 'message' => 'Data berhasil diambil!', 'loans' => $data], 200);
@@ -166,32 +161,5 @@ class LoanController extends Controller
         Loan::find($id)->delete();
 
         return response()->json(['status' => 200, 'message' => 'Data berhasil dihapus!'], 200);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function status(Request $request, $id)
-    {
-        $loan = Loan::find($id);
-        if ($request->status == 1) {
-            //Status = 1 disetujui, approve jadi 1, dan status 2 (Belum Lunas)
-            $loan->is_approve = 1;
-            $loan->status = 2;
-            $this->createBalance($loan);
-        } else if ($request->status == 2) {
-            //status == 2 ditolak
-            $loan->is_approve = 0;
-        } else if ($request->status == 3) {
-            //status == 3 Lunas
-            $loan->is_approve = 1;
-            $loan->status = 1;
-        }
-        $loan->update();
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengubah status peminjaman', 'request' => $request->all()], 200);
     }
 }

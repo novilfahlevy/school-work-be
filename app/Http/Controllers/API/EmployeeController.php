@@ -3,11 +3,20 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\DepositHelperController;
+use App\Models\Deposit;
 use Illuminate\Http\Request;
 use App\Models\User;
 
 class EmployeeController extends Controller
 {
+    private $deposit;
+
+    public function __construct()
+    {
+        $this->deposit = new DepositHelperController;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +24,20 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $data = User::listOfEmployees();
+        $employees = User::whereHas('roles', function ($query) {
+            $query->where('role_id', 2);
+        })->orderBy('name', 'ASC')->get();
+
+        foreach ($employees as $key => $employee) {
+            $data[$key] = [
+                'id' => $employee->id,
+                'name' => $employee->name,
+                'gender' => get_gender_name($employee),
+                'email' => $employee->email,
+                'phoneNumber' => $employee->phone_number,
+                'joinDate' => indonesian_date_format($employee)
+            ];
+        }
 
         return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data pegawai', 'users' => $data], 200);
     }
@@ -49,9 +71,21 @@ class EmployeeController extends Controller
      */
     public function show($id)
     {
-        $data = User::detailsOfEmployee($id);
+        $employee = User::find($id);
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil data detail pengguna', 'user' => $data], 200);
+        $data = [
+            'id' => $employee->id,
+            'name' => $employee->name,
+            'gender' => get_gender_name($employee),
+            'email' => $employee->email,
+            'phoneNumber' => $employee->phone_number,
+            'joinDate' => indonesian_date_format($employee->join_date),
+            'birthDate' => indonesian_date_format($employee->birth_date),
+            'job' => $employee->job,
+            'deposits' => $this->deposit->getDepositDataByUserId($employee->id)
+        ];
+
+        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data!', 'user' => $data], 200);
     }
 
     /**

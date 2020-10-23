@@ -3,11 +3,19 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\DepositHelperController;
 use App\Models\Deposit;
 use Illuminate\Http\Request;
 
 class DepositController extends Controller
 {
+    private $deposit;
+
+    public function __construct()
+    {
+        $this->deposit = new DepositHelperController;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +23,17 @@ class DepositController extends Controller
      */
     public function index()
     {
-        $data = Deposit::listOfDeposits();
+        $deposits = Deposit::all();
+
+        foreach ($deposits as $key => $deposit) {
+            $data[$key] = [
+                'id' => $deposit->id,
+                'employeeName' => $deposit->users()->first()->name,
+                'totalDeposit' => $deposit->total_deposit,
+                'depositDate' => indonesian_date_format($deposit->deposit_date),
+                'status' => $this->deposit->getDepositStatuses($deposit)
+            ];
+        }
 
         return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data setoran', 'deposits' => $data], 200);
     }
@@ -49,7 +67,14 @@ class DepositController extends Controller
      */
     public function show($id)
     {
-        $data = Deposit::detailsOfDeposit($id);
+        $deposit = Deposit::find($id);
+
+        $data['id'] = $deposit->id;
+        $data['employeeName'] = $deposit->users()->first()->name;
+        $data['totalDeposit'] = $deposit->total_deposit;
+        $data['depositDate'] = indonesian_date_format($deposit->deposit_date);
+        $data['status'] = $this->deposit->getDepositStatuses($deposit);
+
 
         return response()->json(['status' => 200, 'message' => 'Berhasil mengambil detail setoran', 'deposit' => $data], 200);
     }

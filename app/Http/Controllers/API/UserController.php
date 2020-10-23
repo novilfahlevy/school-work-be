@@ -5,9 +5,17 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\LoanHelperController;
 
 class UserController extends Controller
 {
+    private $loan;
+
+    public function __construct()
+    {
+        $this->loan = new LoanHelperController;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -62,7 +70,19 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $data = User::detailsOfUser($id);
+        $user = User::find($id);
+
+        $data = [
+            'id' => $user->id,
+            'name' => $user->name,
+            'gender' => get_gender_name($user),
+            'email' => $user->email,
+            'phoneNumber' => $user->phone_number,
+            'joinDate' => indonesian_date_format($user->join_date),
+            'birthDate' => indonesian_date_format($user->birth_date),
+            'job' => $user->job,
+            'loans' => $this->loan->getLoansDataByUserId($user->id)
+        ];
 
         return response()->json(['status' => 200, 'message' => 'Berhasil data detail pengguna', 'user' => $data], 200);
     }

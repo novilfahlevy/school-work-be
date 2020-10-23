@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Payment;
 use App\Models\Balance;
@@ -15,7 +16,20 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $data = Payment::listOfPayments();
+        $payments = Payment::latest('created_at')->get();
+
+        foreach ($payments as $key => $payment) {
+            $data[$key] = [
+                'id' => $payment->id,
+                'loanId' => $payment->loan_id,
+                'userName' => $payment->users()->first()->name,
+                'userPhoneNumber' => $payment->users()->first()->phone_number,
+                'dueDate' => indonesian_date_format($payment->due_date),
+                'paymentNumber' => $payment->payment_number,
+                'paymentDate' => !is_null($payment->payment_date) ? indonesian_date_format($payment->payment_date) : null,
+                'status' => get_payment_status($payment)
+            ];
+        }
 
         return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data angsuran', 'payments' => $data], 200);
     }
@@ -49,7 +63,21 @@ class PaymentController extends Controller
      */
     public function show($id)
     {
-        $data = Payment::detailsOfPayment($id);
+        $payment = Payment::find($id);
+
+        $data = [
+            'id' => $payment->id,
+            'loanId' => $payment->loan_id,
+            'userName' => $payment->users()->first()->name,
+            'userPhoneNumber' => $payment->users()->first()->phone_number,
+            'dueDate' => indonesian_date_format($payment->due_date),
+            'paymentNumber' => $payment->payment_number,
+            'paymentDate' => !is_null($payment->payment_date) ? indonesian_date_format($payment->payment_date) : null,
+            'status' => get_payment_status($payment),
+            'description' => $payment->description,
+            'employeeName' => $payment->employees()->first()->name,
+            'userId' => $payment->users()->first()->id
+        ];
 
         return response()->json(['status' => 200, 'message' => 'Berhasil mengambil detail angsuran', 'payment' => $data], 200);
     }
@@ -86,23 +114,5 @@ class PaymentController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function status(Request $request, $id)
-    {
-        $payment = Payment::find($id);
-        if ($payment->payment_date === null) {
-            $payment->payment_date = date('Y-m-d');
-            $balance = Balance::orderBy("id", "desc")->first();
-            $current_balance = $balance->balance + $payment->loan->total_payment_with_interest;
-            $payment->balance()->create([
-                'balance' => $current_balance,
-                'changed_at' => date('Y-m-d')
-            ]);
-        }
-        $payment->status = $request->status;
-        $payment->description = $request->desc;
-        $payment->update();
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengubah status angsuran'], 200);
     }
 }

@@ -20,46 +20,6 @@ class Deposit extends Model
     }
 
     /**
-     * Wrapping the deposits data
-     *
-     * @return array
-     */
-    public static function listOfDeposits()
-    {
-        $deposits = Deposit::all();
-
-        foreach ($deposits as $key => $deposit) {
-            $data[$key]['id'] = $deposit->id;
-            $data[$key]['employeeName'] = $deposit->users()->first()->name;
-            $data[$key]['totalDeposit'] = $deposit->total_deposit;
-            $data[$key]['depositDate'] = indonesian_date_format($deposit->deposit_date);
-            $data[$key]['status'] = Deposit::getDepositStatuses($deposit);
-        }
-
-        return $data;
-    }
-
-    /**
-     * Get the deposits by user id
-     *
-     * @param  mixed $user_id
-     * @return array
-     */
-    public static function getDepositDataByUserId($user_id)
-    {
-        $deposits = Deposit::where('user_id', $user_id)->get();
-
-        foreach ($deposits as $key => $deposit) {
-            $data[$key]['id'] = $deposit->id;
-            $data[$key]['depositDate'] = indonesian_date_format($deposit->deposit_date);
-            $data[$key]['totalDeposit'] = $deposit->total_deposit;
-            $data[$key]['status'] = Deposit::getDepositStatuses($deposit);
-        }
-
-        return $data;
-    }
-
-    /**
      * Get details of deposit by id
      *
      * @param  mixed $id

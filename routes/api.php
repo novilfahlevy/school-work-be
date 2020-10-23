@@ -1,12 +1,13 @@
 <?php
 
 use App\Http\Controllers\API\DepositController;
-use App\Http\Controllers\API\LoanController;
+use App\Http\Controllers\API\LoanController as APILoanController;
 use App\Http\Controllers\API\PassportAuthController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\EmployeeController;
+use App\Http\Controllers\API\PaymentController as APIPaymentController;
 use App\Http\Controllers\PaymentController;
 
 /*
@@ -31,11 +32,11 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware('auth:api')->group(function () {
     Route::apiResources([
-        'loan' => LoanController::class,
+        'loan' => APILoanController::class,
         'user' => UserController::class,
         'employee' => EmployeeController::class,
         'deposit' => DepositController::class,
-        'payment' => PaymentController::class,
+        'payment' => APIPaymentController::class,
     ]);
     Route::put('loan/status/{id}', [LoanController::class, 'status'])->name("loan.status");
     Route::put('payment/status/{id}', [PaymentController::class, 'status']);

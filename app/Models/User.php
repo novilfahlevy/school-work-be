@@ -17,12 +17,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'email_verified_at'
-    ];
+    protected $guarded = [];
 
     /**
      * The attributes that should be hidden for arrays.
@@ -64,78 +59,5 @@ class User extends Authenticatable
         foreach ($user->roles as $key => $role) {
             return $role->name;
         }
-    }
-
-    /**
-     * Wrapping the user details data
-     *
-     * @param  mixed $id
-     * @return array
-     */
-    public static function detailsOfUser($id)
-    {
-        $user = User::find($id);
-
-        $data = [
-            'id' => $user->id,
-            'name' => $user->name,
-            'gender' => get_gender_name($user),
-            'email' => $user->email,
-            'phoneNumber' => $user->phone_number,
-            'joinDate' => indonesian_date_format($user->join_date),
-            'birthDate' => indonesian_date_format($user->birth_date),
-            'job' => $user->job,
-            'loans' => Loan::getLoansDataByUserId($user->id,)
-        ];
-
-        return $data;
-    }
-
-    /**
-     * Wrapping the employees data
-     *
-     * @return array
-     */
-    public static function listOfEmployees()
-    {
-        $employees = User::whereHas('roles', function ($query) {
-            $query->where('role_id', 2);
-        })->orderBy('name', 'ASC')->get();
-
-        foreach ($employees as $key => $employee) {
-            $data[$key] = [
-                'id' => $employee->id,
-                'name' => $employee->name,
-                'gender' => get_gender_name($employee),
-                'email' => $employee->email,
-                'phoneNumber' => $employee->phone_number,
-                'joinDate' => indonesian_date_format($employee)
-            ];
-        }
-
-        return $data;
-    }
-
-    /**
-     * Wrapping the employee details data
-     *
-     * @param  mixed $id
-     * @return array
-     */
-    public static function detailsOfEmployee($id)
-    {
-        $employee_details = User::findOrFail($id);
-
-        $data['id'] = $employee_details->id;
-        $data['name'] = $employee_details->name;
-        $data['gender'] = get_gender_name($employee_details);
-        $data['email'] = $employee_details->email;
-        $data['phoneNumber'] = $employee_details->phone_number;
-        $data['joinDate'] = indonesian_date_format($employee_details->join_date);
-        $data['birthDate'] = indonesian_date_format($employee_details->birth_date);
-        $data['job'] = $employee_details->job;
-        $data['deposits'] = Deposit::getDepositDataByUserId($employee_details->id);
-
-        return $data;
     }
 }
