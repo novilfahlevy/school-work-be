@@ -33,11 +33,11 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware('auth:api')->group(function () {
     Route::apiResources([
-        'loan' => LoanController::class,
-        'user' => UserController::class,
-        'employee' => EmployeeController::class,
-        'deposit' => DepositController::class,
-        'payment' => PaymentController::class,
+        'loans' => LoanController::class,
+        'users' => UserController::class,
+        'employees' => EmployeeController::class,
+        'deposits' => DepositController::class,
+        'payments' => PaymentController::class,
     ]);
 
     Route::put('loan/status/{id}', [LoanHelperController::class, 'status'])->name("loan.status");

@@ -50,7 +50,7 @@ class EmployeeController extends Controller
             'users' => $data
         ];
 
-        return response()->json($responses, $this->success_code);
+        return response()->json($responses, $this->api->success_code);
     }
 
     /**
