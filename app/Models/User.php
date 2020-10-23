@@ -54,31 +54,6 @@ class User extends Authenticatable
     }
 
     /**
-     * Wrapping the users data
-     *
-     * @return array
-     */
-    public static function listOfUsers()
-    {
-        $users = User::whereHas('roles', function ($query) {
-            $query->where('role_id', 3);
-        })->orderBy('name', 'ASC')->get();
-
-        foreach ($users as $key => $user) {
-            $data[$key] = [
-                'id' => $user->id,
-                'name' => $user->name,
-                'gender' => get_gender_name($user),
-                'email' => $user->email,
-                'phoneNumber' => $user->phone_number,
-                'joinDate' => indonesian_date_format($user)
-            ];
-        }
-
-        return $data;
-    }
-
-    /**
      * Get the user role name by the collection of user data
      *
      * @param  mixed $user

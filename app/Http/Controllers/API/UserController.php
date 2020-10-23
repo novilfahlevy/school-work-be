@@ -15,7 +15,20 @@ class UserController extends Controller
      */
     public function index()
     {
-        $data = User::listOfUsers();
+        $users = User::whereHas('roles', function ($query) {
+            $query->where('role_id', 3);
+        })->orderBy('name', 'ASC')->get();
+
+        foreach ($users as $key => $user) {
+            $data[$key] = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'gender' => get_gender_name($user),
+                'email' => $user->email,
+                'phoneNumber' => $user->phone_number,
+                'joinDate' => indonesian_date_format($user->join_date)
+            ];
+        }
 
         return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data pengguna', 'users' => $data], 200);
     }
