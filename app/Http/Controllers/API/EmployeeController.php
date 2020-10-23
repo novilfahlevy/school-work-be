@@ -7,6 +7,7 @@ use App\Http\Controllers\DepositHelperController;
 use App\Models\Deposit;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class EmployeeController extends Controller
 {
@@ -60,7 +61,21 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = new User();
+        $user->name = $request->name;
+        $user->gender = $request->gender;
+        $user->email = $request->email;
+        $user->phone_number = $request->phoneNumber;
+        $user->join_date = $request->joinDate;
+        $user->date_of_birth = $request->dateOfBirth;
+        $user->password = Hash::make($request->password);
+        $user->address = $request->address;
+        $user->job = $request->job;
+        $user->save();
+
+        $user->roles()->sync($request->role);
+
+        return response()->json(['status' => 201, 'message' => 'Data berhasil ditambahkan!'], 201);
     }
 
     /**
