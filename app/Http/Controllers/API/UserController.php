@@ -107,7 +107,19 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::find($id);
+
+        $user->name = $request->name ?? $user->name;
+        $user->gender = $request->gender ?? $user->gender;
+        $user->email = $request->email ?? $user->email;
+        $user->phone_number = $request->phoneNumber ?? $user->phone_number;
+        $user->join_date = $request->joinDate ?? $user->join_date;
+        $user->date_of_birth = $request->dateOfBirth ?? $user->date_of_birth;
+        $user->address = $request->address ?? $user->address;
+        $user->job = $request->job ?? $user->job;
+        $user->save();
+
+        return response()->json(['status' => 200, 'message' => 'Data berhasil diubah!'], 200);
     }
 
     /**
@@ -118,6 +130,8 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
+        User::find($id)->delete();
+
+        return response()->json(['status' => 200, 'message' => 'Data berhasil dihapus!'], 200);
     }
 }
