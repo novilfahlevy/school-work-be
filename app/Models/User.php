@@ -97,17 +97,19 @@ class User extends Authenticatable
      */
     public static function detailsOfUser($id)
     {
-        $user_details = User::findOrFail($id);
+        $user = User::find($id);
 
-        $data['id'] = $user_details->id;
-        $data['name'] = $user_details->name;
-        $data['gender'] = get_gender_name($user_details);
-        $data['email'] = $user_details->email;
-        $data['phoneNumber'] = $user_details->phone_number;
-        $data['joinDate'] = indonesian_date_format($user_details->join_date);
-        $data['birthDate'] = indonesian_date_format($user_details->birth_date);
-        $data['job'] = indonesian_date_format($user_details->job);
-        $data['loans'] = Loan::getLoansDataByUserId($user_details->id);
+        $data = [
+            'id' => $user->id,
+            'name' => $user->name,
+            'gender' => get_gender_name($user),
+            'email' => $user->email,
+            'phoneNumber' => $user->phone_number,
+            'joinDate' => indonesian_date_format($user->join_date),
+            'birthDate' => indonesian_date_format($user->birth_date),
+            'job' => $user->job,
+            'loans' => Loan::getLoansDataByUserId($user->id,)
+        ];
 
         return $data;
     }
