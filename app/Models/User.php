@@ -65,12 +65,14 @@ class User extends Authenticatable
         })->orderBy('name', 'ASC')->get();
 
         foreach ($users as $key => $user) {
-            $data[$key]['id'] = $user->id;
-            $data[$key]['name'] = $user->name;
-            $data[$key]['gender'] = get_gender_name($user);
-            $data[$key]['email'] = $user->email;
-            $data[$key]['phoneNumber'] = $user->phone_number;
-            $data[$key]['joinDate'] = indonesian_date_format($user->join_date);
+            $data[$key] = [
+                'id' => $user->id,
+                'name' => $user->name,
+                'gender' => get_gender_name($user),
+                'email' => $user->email,
+                'phoneNumber' => $user->phone_number,
+                'joinDate' => indonesian_date_format($user)
+            ];
         }
 
         return $data;
@@ -126,12 +128,14 @@ class User extends Authenticatable
         })->orderBy('name', 'ASC')->get();
 
         foreach ($employees as $key => $employee) {
-            $data[$key]['id'] = $employee->id;
-            $data[$key]['name'] = $employee->name;
-            $data[$key]['gender'] = get_gender_name($employee);
-            $data[$key]['email'] = $employee->email;
-            $data[$key]['phoneNumber'] = $employee->phone_number;
-            $data[$key]['joinDate'] = indonesian_date_format($employee);
+            $data[$key] = [
+                'id' => $employee->id,
+                'name' => $employee->name,
+                'gender' => get_gender_name($employee),
+                'email' => $employee->email,
+                'phoneNumber' => $employee->phone_number,
+                'joinDate' => indonesian_date_format($employee)
+            ];
         }
 
         return $data;
