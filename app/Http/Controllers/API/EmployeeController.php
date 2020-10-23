@@ -108,7 +108,19 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $employee = User::find($id);
+
+        $employee->name = $request->name ?? $employee->name;
+        $employee->gender = $request->gender ?? $employee->gender;
+        $employee->email = $request->email ?? $employee->email;
+        $employee->phone_number = $request->phoneNumber ?? $employee->phone_number;
+        $employee->join_date = $request->joinDate ?? $employee->join_date;
+        $employee->date_of_birth = $request->dateOfBirth ?? $employee->date_of_birth;
+        $employee->address = $request->address ?? $employee->address;
+        $employee->job = $request->job ?? $employee->job;
+        $employee->save();
+
+        return response()->json(['status' => 200, 'message' => 'Data berhasil diubah!'], 200);
     }
 
     /**
@@ -119,6 +131,8 @@ class EmployeeController extends Controller
      */
     public function destroy($id)
     {
-        //
+        User::find($id)->delete();
+
+        return response()->json(['status' => 200, 'message' => 'Data berhasil dihapus!'], 200);
     }
 }
