@@ -33,7 +33,7 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware('auth:api')->group(function () {
     Route::apiResources([
-        'loan' => APILoanController::class,
+        'loan' => LoanController::class,
         'user' => UserController::class,
         'employee' => EmployeeController::class,
         'deposit' => DepositController::class,
