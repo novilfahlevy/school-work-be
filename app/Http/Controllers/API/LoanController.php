@@ -18,7 +18,19 @@ class LoanController extends Controller
      */
     public function index()
     {
-        $data = Loan::listOfLoans();
+        $loans = Loan::latest('created_at')->get();
+
+        foreach ($loans as $key => $loan) {
+            $data[$key] = [
+                'id' => $loan->id,
+                'userId' => $loan->user_id,
+                'userName' => $loan->users()->first()->name,
+                'dueDate' => indonesian_date_format($loan->due_date),
+                'totalLoan' => $loan->total_loan,
+                'status' => get_loan_status($loan),
+                'employeeName' => $loan->employees()->first()->name
+            ];
+        }
 
         return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data pinjaman', 'loans' => $data], 200);
     }
@@ -49,6 +61,12 @@ class LoanController extends Controller
         ]);
     }
 
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
         $user = Auth::user();
@@ -88,8 +106,30 @@ class LoanController extends Controller
      */
     public function show($id)
     {
-        $data = Loan::detailsOfLoan($id);
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data pinjaman', 'loans' => $data], 200);
+        $loan = Loan::find($id);
+
+        $data = [
+            'id' => $loan->id,
+            'userId' => $loan->users()->first()->id,
+            'userName' => $loan->users()->first()->name,
+            'userPhoneNumber' => $loan->users->phone_number,
+            'startDate' => indonesian_date_format($loan->start_date),
+            'dueDate' => indonesian_date_format($loan->due_date),
+            'paidDate' => indonesian_date_format($loan->paid_date),
+            'totalLoan' => $loan->total_loan,
+            'paymentCount' => $loan->payment_counts,
+            'loanInterest' => $loan->loan_interest,
+            'loanWithInterest' => $loan->loan_with_interest,
+            'totalPaymentInterest' => $loan->total_payment_interest,
+            'totalPayment' => $loan->total_payment,
+            'totalPaymentWithInterest' => $loan->total_payment_with_interest,
+            'status' => get_loan_status($loan),
+            'employeeName' => $loan->employees()->first()->name,
+            'employeeId' => $loan->employees()->first()->id,
+            'payments' => Loan::loanPaymentDetails($loan)
+        ];
+
+        return response()->json(['status' => 200, 'message' => 'Data berhasil diambil!', 'loans' => $data], 200);
     }
 
     /**
@@ -123,9 +163,9 @@ class LoanController extends Controller
      */
     public function destroy($id)
     {
-        Loan::softDeletesLoan($id);
+        Loan::find($id)->delete();
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil menghapus peminjaman!'], 200);
+        return response()->json(['status' => 200, 'message' => 'Data berhasil dihapus!'], 200);
     }
 
     /**
