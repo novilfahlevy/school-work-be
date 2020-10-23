@@ -4,9 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Loan;
+use App\Http\Controllers\BalanceHelperController;
 
 class LoanHelperController extends Controller
 {
+    private $balance;
+
+    public function __construct()
+    {
+        $this->balance = new BalanceHelperController;
+    }
+
     public static function getLoansDataByUserId($user_id)
     {
         $loans = Loan::where('user_id', $user_id)->get();
@@ -21,7 +29,7 @@ class LoanHelperController extends Controller
             $data[$key]['status'] = get_loan_status($loan);
         }
 
-        return $data;
+        return $data ?? null;
     }
 
     public function status(Request $request, $id)
@@ -31,7 +39,7 @@ class LoanHelperController extends Controller
             //Status = 1 disetujui, approve jadi 1, dan status 2 (Belum Lunas)
             $loan->is_approve = 1;
             $loan->status = 2;
-            $this->createBalance($loan);
+            $this->balance->createBalance($loan);
         } else if ($request->status == 2) {
             //status == 2 ditolak
             $loan->is_approve = 0;

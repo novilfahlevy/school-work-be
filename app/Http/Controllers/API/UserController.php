@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\LoanHelperController;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -59,7 +60,21 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = new User();
+        $user->name = $request->name;
+        $user->gender = $request->gender;
+        $user->email = $request->email;
+        $user->phone_number = $request->phoneNumber;
+        $user->join_date = $request->joinDate;
+        $user->date_of_birth = $request->dateOfBirth;
+        $user->password = Hash::make($request->password);
+        $user->address = $request->address;
+        $user->job = $request->job;
+        $user->save();
+
+        $user->roles()->sync(3);
+
+        return response()->json(['status' => 200, 'message' => 'Data berhasil ditambahkan!'], 200);
     }
 
     /**
