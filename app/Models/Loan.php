@@ -12,10 +12,14 @@ class Loan extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $guarded = [];
+    protected $dates = ['deleted_at'];
+
     public function balance()
     {
         return $this->morphOne('App\Models\Balance', 'balanceable');
     }
+
     public function users()
     {
         return $this->hasOne('App\Models\User', 'id', 'user_id');
@@ -127,5 +131,10 @@ class Loan extends Model
         }
 
         return $data;
+    }
+
+    public static function softDeletesLoan($id)
+    {
+        Loan::find($id)->delete();
     }
 }

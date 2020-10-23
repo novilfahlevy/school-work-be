@@ -48,6 +48,7 @@ class LoanController extends Controller
             'changed_at' => date('Y-m-d')
         ]);
     }
+
     public function store(Request $request)
     {
         $user = Auth::user();
@@ -122,8 +123,11 @@ class LoanController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Loan::softDeletesLoan($id);
+
+        return response()->json(['status' => 200, 'message' => 'Berhasil menghapus peminjaman!'], 200);
     }
+
     /**
      * Update the specified resource in storage.
      *
