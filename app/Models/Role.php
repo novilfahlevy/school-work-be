@@ -9,6 +9,8 @@ class Role extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function users()
     {
         return $this->belongsToMany('App\Models\User', 'user_has_roles');

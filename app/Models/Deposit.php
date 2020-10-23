@@ -9,6 +9,8 @@ class Deposit extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function balance()
     {
         return $this->morphOne('App\Models\Balance', 'balanceable');
