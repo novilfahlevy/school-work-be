@@ -16,8 +16,10 @@ class BalancesTableSeeder extends Seeder
     {
         DB::table('balances')->insert([
             'balance' => 300000000,
-            'balanceable_type' => 'App\Loan',
+            'balanceable_type' => 'App\Models\Loan',
             'balanceable_id' => 1,
+            'user_id' => 1,
+            'type' => 1,
             'changed_at' => date('Y-m-d H:i:s')
         ]);
     }

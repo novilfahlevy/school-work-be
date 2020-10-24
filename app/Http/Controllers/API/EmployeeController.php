@@ -39,6 +39,7 @@ class EmployeeController extends Controller
                 'name' => $employee->name,
                 'gender' => get_gender_name($employee),
                 'email' => $employee->email,
+                'role' => User::getUserRoleName(User::find($employee->id)),
                 'phoneNumber' => $employee->phone_number,
                 'joinDate' => indonesian_date_format($employee)
             ];

@@ -71,15 +71,6 @@ class LoanController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    private function createBalance($loan)
-    {
-        $balance = Balance::orderBy("id", "desc")->first();
-        $current_balance = $balance->balance - $loan->total_loan;
-        $loan->balance()->create([
-            'balance' => $current_balance,
-            'changed_at' => date('Y-m-d H:i:s')
-        ]);
-    }
     public function store(Request $request)
     {
         $user = Auth::user();
@@ -105,7 +96,7 @@ class LoanController extends Controller
         $loan->is_approve = $user->roles->first()->id !== 1 ? null : 1; //sudah divalidasi
         $loan->status = $user->roles->first()->id !== 1 ? 0 : 2; //status 2= belum lunas 0 = proses
         $loan->save();
-        if ($user->roles->first()->id === 1) $this->balance->createBalance($loan);
+        if ($user->roles->first()->id === 1) $this->balance->createBalance($loan, -$loan->total_loan, 1);
         $this->payment->storePaymentBasedOnDataFromLoan($payments, $request->paymentCounts, $loan->id);
 
         $responses = [
@@ -195,5 +186,25 @@ class LoanController extends Controller
         ];
 
         return response()->json($responses, $this->api->success_code);
+    }
+
+    public function status(Request $request, $id)
+    {
+        $loan = Loan::find($id);
+        if ($request->status == 1) {
+            //Status = 1 disetujui, approve jadi 1, dan status 2 (Belum Lunas)
+            $loan->is_approve = 1;
+            $loan->status = 2;
+            $this->balance->createBalance($loan, -$loan->total_loan, 1);
+        } else if ($request->status == 2) {
+            //status == 2 ditolak
+            $loan->is_approve = 0;
+        } else if ($request->status == 3) {
+            //status == 3 Lunas
+            $loan->is_approve = 1;
+            $loan->status = 1;
+        }
+        $loan->update();
+        return response()->json(['status' => 200, 'message' => 'Berhasil mengubah status peminjaman'], 200);
     }
 }

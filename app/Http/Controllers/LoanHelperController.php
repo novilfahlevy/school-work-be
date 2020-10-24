@@ -31,24 +31,4 @@ class LoanHelperController extends Controller
 
         return $data ?? null;
     }
-
-    public function status(Request $request, $id)
-    {
-        $loan = Loan::find($id);
-        if ($request->status == 1) {
-            //Status = 1 disetujui, approve jadi 1, dan status 2 (Belum Lunas)
-            $loan->is_approve = 1;
-            $loan->status = 2;
-            $this->balance->createBalance($loan);
-        } else if ($request->status == 2) {
-            //status == 2 ditolak
-            $loan->is_approve = 0;
-        } else if ($request->status == 3) {
-            //status == 3 Lunas
-            $loan->is_approve = 1;
-            $loan->status = 1;
-        }
-        $loan->update();
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengubah status peminjaman', 'request' => $request->all()], 200);
-    }
 }

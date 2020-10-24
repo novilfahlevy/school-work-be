@@ -8,16 +8,6 @@ use App\Models\Balance;
 
 class BalanceController extends Controller
 {
-    private function getBalanceType($balance)
-    {
-        if ($balance->balanceable_type === "App\Models\Loan") {
-            return "Peminjaman";
-        } else if ($balance->balanceable_type === "App\Models\Payment") {
-            return "Angsuran";
-        } else {
-            return "Setoran";
-        }
-    }
     /**
      * Display a listing of the resource.
      *
@@ -32,7 +22,9 @@ class BalanceController extends Controller
                 'id' => $balance->id,
                 'balance' => $balance->balance,
                 'status' => $prev_balance !== null && $prev_balance->balance > $balance->balance ? "Penurunan" : "Peningkatan",
-                'type' => $this->getBalanceType($balance),
+                'type' => $balance->balanceable_name,
+                'doType' => $balance->type,
+                'userName' => $balance->user->name,
                 'changedAt' => $balance->changed_at
             ];
         }

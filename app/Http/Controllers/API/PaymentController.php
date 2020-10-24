@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\ApiHelperController;
+use App\Http\Controllers\BalanceHelperController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Payment;
@@ -15,6 +16,7 @@ class PaymentController extends Controller
     public function __construct()
     {
         $this->api = new ApiHelperController;
+        $this->balance = new BalanceHelperController;
     }
 
     /**
@@ -24,7 +26,7 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $payments = Payment::latest('created_at')->get();
+        $payments = Payment::orderBy('id', 'desc')->get();
 
         foreach ($payments as $key => $payment) {
             $data[$key] = [
@@ -134,5 +136,18 @@ class PaymentController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function status(Request $request, $id)
+    {
+        $payment = Payment::find($id);
+        if ($payment->payment_date === null) {
+            $payment->payment_date = date('Y-m-d');
+            $this->balance->createBalance($payment, $payment->loan->total_payment_with_interest, 1);
+        }
+        $payment->status = $request->status;
+        $payment->description = $request->desc;
+        $payment->update();
+        return response()->json(['status' => 200, 'message' => 'Berhasil mengubah status angsuran'], 200);
     }
 }

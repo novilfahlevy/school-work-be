@@ -17,8 +17,11 @@ class CreateBalancesTable extends Migration
             $table->id();
             $table->integer('balance');
             $table->morphs('balanceable');
+            $table->unsignedBigInteger('user_id');
+            $table->tinyInteger('type')->comment('1 = create, 2 = update, 3 = delete');
             $table->dateTime('changed_at');
             $table->timestamps();
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
         });
     }
 

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\ApiHelperController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiHelperController;
 use App\Http\Controllers\DepositHelperController;
+use App\Http\Controllers\BalanceHelperController;
 use App\Models\Deposit;
 use Illuminate\Http\Request;
 use App\Models\Balance;
@@ -18,6 +19,7 @@ class DepositController extends Controller
     public function __construct()
     {
         $this->deposit = new DepositHelperController;
+        $this->balance = new BalanceHelperController;
         $this->api = new ApiHelperController;
     }
 
@@ -26,21 +28,9 @@ class DepositController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    private function createBalance($deposit, $addValue = null)
-    {
-        $balance = Balance::orderBy("id", "desc")->first();
-        $current_balance = $balance->balance + $deposit->total_deposit;
-        if ($addValue !== null) {
-            $current_balance = $balance->balance + $addValue;
-        }
-        $deposit->balance()->create([
-            'balance' => $current_balance,
-            'changed_at' => date('Y-m-d H:i:s')
-        ]);
-    }
     public function index()
     {
-        $deposits = Deposit::all();
+        $deposits = Deposit::orderBy('id', 'desc')->get();
 
         foreach ($deposits as $key => $deposit) {
             $data[$key] = [
@@ -87,7 +77,7 @@ class DepositController extends Controller
             'is_main_savings' => $request->depositType,
             'status' => $user->roles->first()->id === 1 ? 1 : 0
         ]);
-        if ($user->roles->first()->id === 1) $this->createBalance($deposit);
+        if ($user->roles->first()->id === 1) $this->balance->createBalance($deposit, $request->totalDeposit, 1);
         return response()->json(['status' => 201, 'message' => 'Berhasil menambah setoran'], 201);
     }
 
@@ -102,8 +92,10 @@ class DepositController extends Controller
         $deposit = Deposit::find($id);
         $data = [
             'id' => $deposit->id,
-            'employeeName' => $deposit->users()->first()->name,
+            'userId' => $deposit->users()->first()->id,
+            'userName' => $deposit->users()->first()->name,
             'totalDeposit' => $deposit->total_deposit,
+            'depositType' => $deposit->is_main_savings,
             'depositDate' => indonesian_date_format($deposit->deposit_date),
             'status' => $this->deposit->getDepositStatuses($deposit)
         ];
@@ -140,7 +132,7 @@ class DepositController extends Controller
         $deposit = Deposit::find($id);
         $total_deposit_before_change = $deposit->total_deposit;
         if ($request->isChangeBalance) {
-            $this->createBalance($deposit, $request->totalDeposit - $total_deposit_before_change);
+            $this->balance->createBalance($deposit, $request->totalDeposit - $total_deposit_before_change, 2);
         }
         $deposit->total_deposit = $request->totalDeposit;
         $deposit->deposit_date = $request->depositDate;
@@ -157,6 +149,22 @@ class DepositController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Deposit::find($id)->delete();
+
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->deleted_message
+        ];
+
+        return response()->json($responses, $this->api->success_code);
+    }
+
+    public function status(Request $request, $id)
+    {
+        $deposit = Deposit::find($id);
+        $deposit->status = $request->status;
+        $deposit->save();
+        $request->status === 1 && $this->balance->createBalance($deposit, $deposit->total_deposit, 2);
+        return response()->json(['status' => 200, 'message' => 'Berhasil mengubah status setoran'], 200);
     }
 }

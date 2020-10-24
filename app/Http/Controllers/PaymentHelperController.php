@@ -22,23 +22,6 @@ class PaymentHelperController extends Controller
         return $data;
     }
 
-    public function status(Request $request, $id)
-    {
-        $payment = Payment::find($id);
-        if ($payment->payment_date === null) {
-            $payment->payment_date = date('Y-m-d');
-            $balance = Balance::orderBy("id", "desc")->first();
-            $current_balance = $balance->balance + $payment->loan->total_payment_with_interest;
-            $payment->balance()->create([
-                'balance' => $current_balance,
-                'changed_at' => date('Y-m-d')
-            ]);
-        }
-        $payment->status = $request->status;
-        $payment->description = $request->desc;
-        $payment->update();
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengubah status angsuran!'], 200);
-    }
 
     public static function storePaymentBasedOnDataFromLoan($payments, $payment_counts, $loan_id)
     {

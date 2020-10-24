@@ -48,6 +48,11 @@ class User extends Authenticatable
         return $this->hasMany('App\Models\Loan');
     }
 
+    public function balances()
+    {
+        return $this->hasMany('App\Models\Balance');
+    }
+
     /**
      * Get the user role name by the collection of user data
      *

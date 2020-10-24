@@ -44,6 +44,7 @@ Route::middleware('auth:api')->group(function () {
     ]);
 
     Route::put('loans/status/{id}', [LoanHelperController::class, 'status'])->name("loan.status");
+    Route::put('deposits/status/{id}', [DepositController::class, 'status'])->name("deposit.status");
     Route::put('payments/status/{id}', [PaymentHelperController::class, 'status']);
 
     Route::put('password/change', [ProfileController::class, 'changePassword']);
