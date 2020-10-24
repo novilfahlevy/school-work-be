@@ -45,7 +45,7 @@ class LoanController extends Controller
         $current_balance = $balance->balance - $loan->total_loan;
         $loan->balance()->create([
             'balance' => $current_balance,
-            'changed_at' => date('Y-m-d')
+            'changed_at' => date('Y-m-d H:i:s')
         ]);
     }
     public function store(Request $request)

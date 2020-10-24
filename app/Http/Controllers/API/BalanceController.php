@@ -1,13 +1,23 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Payment;
 use App\Models\Balance;
 
-class PaymentController extends Controller
+class BalanceController extends Controller
 {
+    private function getBalanceType($balance)
+    {
+        if ($balance->balanceable_type === "App\Models\Loan") {
+            return "Peminjaman";
+        } else if ($balance->balanceable_type === "App\Models\Payment") {
+            return "Angsuran";
+        } else {
+            return "Setoran";
+        }
+    }
     /**
      * Display a listing of the resource.
      *
@@ -15,9 +25,18 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $data = Payment::listOfPayments();
-
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data angsuran', 'payments' => $data], 200);
+        $data = [];
+        foreach (Balance::orderBy('id', 'desc')->get() as $balance) {
+            $prev_balance = Balance::where('id', '<', $balance->id)->orderBy('id', 'desc')->first();
+            $data[] = [
+                'id' => $balance->id,
+                'balance' => $balance->balance,
+                'status' => $prev_balance !== null && $prev_balance->balance > $balance->balance ? "Penurunan" : "Peningkatan",
+                'type' => $this->getBalanceType($balance),
+                'changedAt' => $balance->changed_at
+            ];
+        }
+        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data saldo', 'balances' => $data], 200);
     }
 
     /**
@@ -49,9 +68,7 @@ class PaymentController extends Controller
      */
     public function show($id)
     {
-        $data = Payment::detailsOfPayment($id);
-
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil detail angsuran', 'payment' => $data], 200);
+        //
     }
 
     /**
@@ -86,23 +103,5 @@ class PaymentController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function status(Request $request, $id)
-    {
-        $payment = Payment::find($id);
-        if ($payment->payment_date === null) {
-            $payment->payment_date = date('Y-m-d');
-            $balance = Balance::orderBy("id", "desc")->first();
-            $current_balance = $balance->balance + $payment->loan->total_payment_with_interest;
-            $payment->balance()->create([
-                'balance' => $current_balance,
-                'changed_at' => date('Y-m-d H:i:s')
-            ]);
-        }
-        $payment->status = $request->status;
-        $payment->description = $request->desc;
-        $payment->update();
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengubah status angsuran'], 200);
     }
 }

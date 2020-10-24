@@ -8,10 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Deposit extends Model
 {
     use HasFactory;
-
+    protected $fillable = [
+        'total_deposit', 'user_id', 'deposit_date', 'is_main_savings', 'status'
+    ];
     public function balance()
     {
-        return $this->morphOne('App\Models\Balance', 'balanceable');
+        return $this->morphMany('App\Models\Balance', 'balanceable');
     }
 
     public function users()
@@ -26,7 +28,7 @@ class Deposit extends Model
      */
     public static function listOfDeposits()
     {
-        $deposits = Deposit::all();
+        $deposits = Deposit::orderBy('id', 'desc')->get();
 
         foreach ($deposits as $key => $deposit) {
             $data[$key]['id'] = $deposit->id;
@@ -70,11 +72,12 @@ class Deposit extends Model
         $deposit_details = Deposit::findOrFail($id);
 
         $data['id'] = $deposit_details->id;
-        $data['employeeName'] = $deposit_details->users()->first()->name;
+        $data['userName'] = $deposit_details->users()->first()->name;
+        $data['userId'] = $deposit_details->users()->first()->id;
         $data['totalDeposit'] = $deposit_details->total_deposit;
         $data['depositDate'] = indonesian_date_format($deposit_details->deposit_date);
         $data['status'] = Deposit::getDepositStatuses($deposit_details);
-
+        $data['depositType'] = $deposit_details->is_main_savings;
         return $data;
     }
 

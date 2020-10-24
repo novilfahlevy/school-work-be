@@ -4,6 +4,7 @@ use App\Http\Controllers\API\DepositController;
 use App\Http\Controllers\API\LoanController;
 use App\Http\Controllers\API\PassportAuthController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\BalanceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\EmployeeController;
@@ -36,6 +37,7 @@ Route::middleware('auth:api')->group(function () {
         'employee' => EmployeeController::class,
         'deposit' => DepositController::class,
         'payment' => PaymentController::class,
+        'balance' => BalanceController::class,
     ]);
     Route::put('loan/status/{id}', [LoanController::class, 'status'])->name("loan.status");
     Route::put('payment/status/{id}', [PaymentController::class, 'status']);

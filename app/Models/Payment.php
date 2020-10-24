@@ -11,7 +11,7 @@ class Payment extends Model
 
     public function balance()
     {
-        return $this->morphOne('App\Models\Balance', 'balanceable');
+        return $this->morphMany('App\Models\Balance', 'balanceable');
     }
     public function users()
     {
