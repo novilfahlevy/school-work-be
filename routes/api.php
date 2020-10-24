@@ -8,7 +8,10 @@ use App\Http\Controllers\API\BalanceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\EmployeeController;
-use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\API\PaymentController;
+use App\Http\Controllers\API\ProfileController;
+use App\Http\Controllers\PaymentHelperController;
+use App\Http\Controllers\LoanHelperController;
 
 /*
 |--------------------------------------------------------------------------
@@ -32,13 +35,16 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware('auth:api')->group(function () {
     Route::apiResources([
-        'loan' => LoanController::class,
-        'user' => UserController::class,
-        'employee' => EmployeeController::class,
-        'deposit' => DepositController::class,
-        'payment' => PaymentController::class,
-        'balance' => BalanceController::class,
+        'loans' => LoanController::class,
+        'users' => UserController::class,
+        'employees' => EmployeeController::class,
+        'deposits' => DepositController::class,
+        'payments' => PaymentController::class,
+        'balances' => BalanceController::class,
     ]);
-    Route::put('loan/status/{id}', [LoanController::class, 'status'])->name("loan.status");
-    Route::put('payment/status/{id}', [PaymentController::class, 'status']);
+
+    Route::put('loans/status/{id}', [LoanHelperController::class, 'status'])->name("loan.status");
+    Route::put('payments/status/{id}', [PaymentHelperController::class, 'status']);
+
+    Route::put('password/change', [ProfileController::class, 'changePassword']);
 });

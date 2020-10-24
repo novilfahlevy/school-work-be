@@ -2,15 +2,29 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\ApiHelperController;
+use App\Http\Controllers\BalanceHelperController;
 use App\Http\Controllers\Controller;
 use App\Models\Loan;
 use App\Models\Payment;
 use App\Models\Balance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\PaymentHelperController;
 
 class LoanController extends Controller
 {
+    private $payment;
+    private $balance;
+    private $api;
+
+    public function __construct()
+    {
+        $this->payment = new PaymentHelperController;
+        $this->balance = new BalanceHelperController;
+        $this->api = new ApiHelperController;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -18,9 +32,27 @@ class LoanController extends Controller
      */
     public function index()
     {
-        $data = Loan::listOfLoans();
+        $loans = Loan::latest('created_at')->get();
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data pinjaman', 'loans' => $data], 200);
+        foreach ($loans as $key => $loan) {
+            $data[$key] = [
+                'id' => $loan->id,
+                'userId' => $loan->user_id,
+                'userName' => $loan->users()->first()->name,
+                'dueDate' => indonesian_date_format($loan->due_date),
+                'totalLoan' => $loan->total_loan,
+                'status' => get_loan_status($loan),
+                'employeeName' => $loan->employees()->first()->name
+            ];
+        }
+
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->success_message,
+            'loans' => $data
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 
     /**
@@ -73,10 +105,15 @@ class LoanController extends Controller
         $loan->is_approve = $user->roles->first()->id !== 1 ? null : 1; //sudah divalidasi
         $loan->status = $user->roles->first()->id !== 1 ? 0 : 2; //status 2= belum lunas 0 = proses
         $loan->save();
-        if ($user->roles->first()->id === 1) $this->createBalance($loan);
-        Payment::storePaymentBasedOnDataFromLoan($payments, $request->paymentCounts, $loan->id);
+        if ($user->roles->first()->id === 1) $this->balance->createBalance($loan);
+        $this->payment->storePaymentBasedOnDataFromLoan($payments, $request->paymentCounts, $loan->id);
 
-        return response()->json(['status' => 201, 'message' => 'Berhasil menambah pinjaman'], 201);
+        $responses = [
+            'status' => $this->api->created_code,
+            'message' => $this->api->created_message
+        ];
+
+        return response()->json($responses, $this->api->created_code);
     }
 
     /**
@@ -87,8 +124,36 @@ class LoanController extends Controller
      */
     public function show($id)
     {
-        $data = Loan::detailsOfLoan($id);
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data pinjaman', 'loans' => $data], 200);
+        $loan = Loan::find($id);
+
+        $data = [
+            'id' => $loan->id,
+            'userId' => $loan->users()->first()->id,
+            'userName' => $loan->users()->first()->name,
+            'userPhoneNumber' => $loan->users->phone_number,
+            'startDate' => indonesian_date_format($loan->start_date),
+            'dueDate' => indonesian_date_format($loan->due_date),
+            'paidDate' => indonesian_date_format($loan->paid_date),
+            'totalLoan' => $loan->total_loan,
+            'paymentCount' => $loan->payment_counts,
+            'loanInterest' => $loan->loan_interest,
+            'loanWithInterest' => $loan->loan_with_interest,
+            'totalPaymentInterest' => $loan->total_payment_interest,
+            'totalPayment' => $loan->total_payment,
+            'totalPaymentWithInterest' => $loan->total_payment_with_interest,
+            'status' => get_loan_status($loan),
+            'employeeName' => $loan->employees()->first()->name,
+            'employeeId' => $loan->employees()->first()->id,
+            'payments' => $this->payment->loanPaymentDetails($loan)
+        ];
+
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->created_message,
+            'loan' => $data
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 
     /**
@@ -122,32 +187,13 @@ class LoanController extends Controller
      */
     public function destroy($id)
     {
-        //
-    }
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function status(Request $request, $id)
-    {
-        $loan = Loan::find($id);
-        if ($request->status == 1) {
-            //Status = 1 disetujui, approve jadi 1, dan status 2 (Belum Lunas)
-            $loan->is_approve = 1;
-            $loan->status = 2;
-            $this->createBalance($loan);
-        } else if ($request->status == 2) {
-            //status == 2 ditolak
-            $loan->is_approve = 0;
-        } else if ($request->status == 3) {
-            //status == 3 Lunas
-            $loan->is_approve = 1;
-            $loan->status = 1;
-        }
-        $loan->update();
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengubah status peminjaman', 'request' => $request->all()], 200);
+        Loan::find($id)->delete();
+
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->deleted_message
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 }

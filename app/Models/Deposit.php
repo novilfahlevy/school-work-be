@@ -11,6 +11,9 @@ class Deposit extends Model
     protected $fillable = [
         'total_deposit', 'user_id', 'deposit_date', 'is_main_savings', 'status'
     ];
+
+    protected $guarded = [];
+
     public function balance()
     {
         return $this->morphMany('App\Models\Balance', 'balanceable');

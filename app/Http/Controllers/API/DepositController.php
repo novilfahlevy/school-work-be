@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\ApiHelperController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\DepositHelperController;
 use App\Models\Deposit;
 use Illuminate\Http\Request;
 use App\Models\Balance;
@@ -10,6 +12,15 @@ use Illuminate\Support\Facades\Auth;
 
 class DepositController extends Controller
 {
+    private $deposit;
+    private $api;
+
+    public function __construct()
+    {
+        $this->deposit = new DepositHelperController;
+        $this->api = new ApiHelperController;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -29,9 +40,25 @@ class DepositController extends Controller
     }
     public function index()
     {
-        $data = Deposit::listOfDeposits();
+        $deposits = Deposit::all();
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data setoran', 'deposits' => $data], 200);
+        foreach ($deposits as $key => $deposit) {
+            $data[$key] = [
+                'id' => $deposit->id,
+                'employeeName' => $deposit->users()->first()->name,
+                'totalDeposit' => $deposit->total_deposit,
+                'depositDate' => indonesian_date_format($deposit->deposit_date),
+                'status' => $this->deposit->getDepositStatuses($deposit)
+            ];
+        }
+
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->success_message,
+            'deposits' => $data
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 
     /**
@@ -72,8 +99,22 @@ class DepositController extends Controller
      */
     public function show($id)
     {
-        $data = Deposit::detailsOfDeposit($id);
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil detail setoran', 'deposit' => $data], 200);
+        $deposit = Deposit::find($id);
+        $data = [
+            'id' => $deposit->id,
+            'employeeName' => $deposit->users()->first()->name,
+            'totalDeposit' => $deposit->total_deposit,
+            'depositDate' => indonesian_date_format($deposit->deposit_date),
+            'status' => $this->deposit->getDepositStatuses($deposit)
+        ];
+
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->success_message,
+            'deposit' => $data
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 
     /**
