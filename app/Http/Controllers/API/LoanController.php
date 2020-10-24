@@ -128,7 +128,7 @@ class LoanController extends Controller
             'totalLoan' => $loan->total_loan,
             'paymentCount' => $loan->payment_counts,
             'loanInterest' => $loan->loan_interest,
-            'loanWithInterest' => $loan->loan_with_interest,
+            'loanWithInterest' => $loan->total_loan_with_interest,
             'totalPaymentInterest' => $loan->total_payment_interest,
             'totalPayment' => $loan->total_payment,
             'totalPaymentWithInterest' => $loan->total_payment_with_interest,
