@@ -2,12 +2,26 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Helper\Helper;
+use App\Http\Controllers\ApiHelperController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\DepositHelperController;
+use App\Models\Deposit;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class EmployeeController extends Controller
 {
+    private $deposit;
+    private $api;
+
+    public function __construct()
+    {
+        $this->deposit = new DepositHelperController;
+        $this->api = new ApiHelperController;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -15,9 +29,29 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $data = User::listOfEmployees();
+        $employees = User::whereHas('roles', function ($query) {
+            $query->where('role_id', 2);
+        })->orderBy('name', 'ASC')->get();
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data pegawai', 'users' => $data], 200);
+        foreach ($employees as $key => $employee) {
+            $data[$key] = [
+                'id' => $employee->id,
+                'name' => $employee->name,
+                'gender' => get_gender_name($employee),
+                'email' => $employee->email,
+                'role' => User::getUserRoleName(User::find($employee->id)),
+                'phoneNumber' => $employee->phone_number,
+                'joinDate' => indonesian_date_format($employee)
+            ];
+        }
+
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->success_message,
+            'users' => $data
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 
     /**
@@ -38,7 +72,26 @@ class EmployeeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $user = new User();
+        $user->name = $request->name;
+        $user->gender = $request->gender;
+        $user->email = $request->email;
+        $user->phone_number = $request->phoneNumber;
+        $user->join_date = $request->joinDate;
+        $user->date_of_birth = $request->dateOfBirth;
+        $user->password = Hash::make($request->password);
+        $user->address = $request->address;
+        $user->job = $request->job;
+        $user->save();
+
+        $user->roles()->sync($request->role);
+
+        $responses = [
+            'status' => $this->api->created_code,
+            'message' => $this->api->created_message
+        ];
+
+        return response()->json($responses, $this->api->created_code);
     }
 
     /**
@@ -49,9 +102,27 @@ class EmployeeController extends Controller
      */
     public function show($id)
     {
-        $data = User::detailsOfEmployee($id);
+        $employee = User::find($id);
 
-        return response()->json(['status' => 200, 'message' => 'Berhasil data detail pengguna', 'user' => $data], 200);
+        $data = [
+            'id' => $employee->id,
+            'name' => $employee->name,
+            'gender' => get_gender_name($employee),
+            'email' => $employee->email,
+            'phoneNumber' => $employee->phone_number,
+            'joinDate' => indonesian_date_format($employee->join_date),
+            'birthDate' => indonesian_date_format($employee->birth_date),
+            'job' => $employee->job,
+            'deposits' => $this->deposit->getDepositDataByUserId($employee->id)
+        ];
+
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->success_message,
+            'user' => $data
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 
     /**
@@ -74,7 +145,24 @@ class EmployeeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $employee = User::find($id);
+
+        $employee->name = $request->name ?? $employee->name;
+        $employee->gender = $request->gender ?? $employee->gender;
+        $employee->email = $request->email ?? $employee->email;
+        $employee->phone_number = $request->phoneNumber ?? $employee->phone_number;
+        $employee->join_date = $request->joinDate ?? $employee->join_date;
+        $employee->date_of_birth = $request->dateOfBirth ?? $employee->date_of_birth;
+        $employee->address = $request->address ?? $employee->address;
+        $employee->job = $request->job ?? $employee->job;
+        $employee->save();
+
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->updated_message
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 
     /**
@@ -85,6 +173,13 @@ class EmployeeController extends Controller
      */
     public function destroy($id)
     {
-        //
+        User::find($id)->delete();
+
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->deleted_message
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 }

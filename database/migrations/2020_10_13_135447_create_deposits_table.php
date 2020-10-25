@@ -17,7 +17,7 @@ class CreateDepositsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->integer('total_deposit');
-            $table->dateTime('deposit_date');
+            $table->date('deposit_date');
             $table->boolean('is_main_savings')->comment('0 = pinjaman wajib, 1 = pinjaman pokok');
             $table->tinyInteger('status')->comment('0 = belum divalidasi, 1 = disetujui, 2 = ditolak');
             $table->timestamps();

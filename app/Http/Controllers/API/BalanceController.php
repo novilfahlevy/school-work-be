@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Payment;
+use App\Models\Balance;
 
-class PaymentController extends Controller
+class BalanceController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,9 +15,20 @@ class PaymentController extends Controller
      */
     public function index()
     {
-        $data = Payment::listOfPayments();
-
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data angsuran', 'payments' => $data], 200);
+        $data = [];
+        foreach (Balance::orderBy('id', 'desc')->get() as $balance) {
+            $prev_balance = Balance::where('id', '<', $balance->id)->orderBy('id', 'desc')->first();
+            $data[] = [
+                'id' => $balance->id,
+                'balance' => $balance->balance,
+                'status' => $prev_balance !== null && $prev_balance->balance > $balance->balance ? "Penurunan" : "Peningkatan",
+                'type' => $balance->balanceable_name,
+                'doType' => $balance->type,
+                'userName' => $balance->user->name,
+                'changedAt' => $balance->changed_at
+            ];
+        }
+        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil data saldo', 'balances' => $data], 200);
     }
 
     /**
@@ -48,9 +60,7 @@ class PaymentController extends Controller
      */
     public function show($id)
     {
-        $data = Payment::detailsOfPayment($id);
-
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengambil detail angsuran', 'payment' => $data], 200);
+        //
     }
 
     /**
