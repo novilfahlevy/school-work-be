@@ -1,0 +1,78 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Balance;
+use App\Models\User;
+use App\Models\Loan;
+use App\Models\Payment;
+use App\Models\Deposit;
+use Carbon\Carbon;
+use App\Http\Controllers\ApiHelperController;
+
+class DashboardController extends Controller
+{
+    public function __construct()
+    {
+        $this->api = new ApiHelperController;
+    }
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    private function toDashboardData($count, $lastDate)
+    {
+        return [
+            "count" => $count,
+            "lastDate" =>  Carbon::parse($lastDate)->format("d-m-Y H:i:s")
+        ];
+    }
+    private function getLoansByMonthsData($year = null)
+    {
+        $year = $year === null ? Carbon::now()->format("Y") : $year;
+        $line_data = [];
+        for ($month = 1; $month <= 12; $month++) {
+            $line_data[] = Loan::whereMonth('start_date', $month)->whereYear('start_date', $year)->count();
+        }
+        $pie_data = array_count_values(Loan::whereYear('start_date', $year)->get()->map(function ($loan) {
+            return get_loan_status($loan);
+        })->toArray());
+        return [
+            'lineData' => $line_data,
+            'pieData' => [
+                $pie_data["Lunas"] ?? 0,
+                $pie_data["Belum Lunas"] ?? 0,
+                $pie_data["Belum Divalidasi"] ?? 0,
+                $pie_data["Ditolak"] ?? 0
+            ]
+        ];
+    }
+    public function index()
+    {
+        $balance = Balance::orderBy("id", "desc")->first();
+        $deposits = Deposit::orderBy("id", "desc")->get();
+        $loans = Loan::orderBy("id", "desc")->get();
+        $users = User::whereHas('roles', function ($query) {
+            $query->where('role_id', 3);
+        })->orderBy('id', 'desc')->get();
+        $paid_payments = Payment::where("status", 1)->orderBy("payment_date", "desc")->get();
+        $late_payments = Payment::where("status", 1)->where("due_date", "<", date("Y-m-d"))->orderBy("id", "desc")->get();
+        $data = [
+            "balance" => $this->toDashboardData($balance->balance, $balance->changed_at),
+            "deposit" => $this->toDashboardData($deposits->count(), $deposits->first()->created_at),
+            "loan" => $this->toDashboardData($loans->count(), $loans->first()->created_at),
+            "user" => $this->toDashboardData($users->count(), $users->first()->created_at),
+            "paidPayment" => $this->toDashboardData($paid_payments->count(), $paid_payments->first()->created_at),
+            "latePayment" => $this->toDashboardData($late_payments->count(), $late_payments->first()->created_at),
+        ];
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->success_message,
+            'infographics' => $data,
+            'graphics' => $this->getLoansByMonthsData()
+        ];
+        return response()->json($responses, $this->api->success_code);
+    }
+}

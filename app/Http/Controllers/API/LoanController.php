@@ -202,6 +202,7 @@ class LoanController extends Controller
         } else if ($request->status == 3) {
             //status == 3 Lunas
             $loan->is_approve = 1;
+            $loan->paid_date = date("Y-m-d");
             $loan->status = 1;
         }
         $loan->update();
