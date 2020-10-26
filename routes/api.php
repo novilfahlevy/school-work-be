@@ -13,6 +13,7 @@ use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\PaymentHelperController;
 use App\Http\Controllers\LoanHelperController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,6 +48,7 @@ Route::middleware('api')->group(function () {
             'deposits' => DepositController::class,
             'payments' => PaymentController::class,
             'balances' => BalanceController::class,
+            'dashboard' => DashboardController::class,
         ]);
 
         Route::put('loans/status/{id}', [LoanController::class, 'status'])->name("loan.status");
