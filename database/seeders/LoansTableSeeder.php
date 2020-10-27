@@ -90,7 +90,7 @@ class LoansTableSeeder extends Seeder
                 'payment_counts' => mt_rand(1, 12),
                 'status' => 2,
                 'is_approve' => 1,
-                'created_at' => now(),
+                'created_at' => Carbon::createFromDate(date('Y'), mt_rand(1, 12), mt_rand(1, date('d'))),
                 'updated_at' => now()
             ]);
         }
