@@ -102,7 +102,7 @@ class EmployeeController extends Controller
      */
     public function show($id)
     {
-        $employee = User::find($id);
+        $employee = User::findOrFail($id);
 
         $data = [
             'id' => $employee->id,
