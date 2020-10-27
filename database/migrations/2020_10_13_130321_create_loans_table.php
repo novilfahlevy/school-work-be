@@ -17,7 +17,7 @@ class CreateLoansTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('employee_id');
-            $table->dateTime('start_date');
+            $table->date('start_date');
             $table->date('due_date');
             $table->date('paid_date')->nullable();
             $table->integer('loan_interest');
