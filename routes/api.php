@@ -14,6 +14,7 @@ use App\Http\Controllers\ExportController;
 use App\Http\Controllers\PaymentHelperController;
 use App\Http\Controllers\LoanHelperController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DepositHelperController;
 
 /*
 |--------------------------------------------------------------------------
@@ -52,9 +53,9 @@ Route::middleware('api')->group(function () {
         ]);
 
         Route::delete('users/{id}/{type}', [UserController::class, 'destroy']);
-        Route::put('loans/status/{id}', [LoanController::class, 'status'])->name("loan.status");
-        Route::put('deposits/status/{id}', [DepositController::class, 'status'])->name("deposit.status");
-        Route::put('payments/status/{id}', [PaymentController::class, 'status']);
+        Route::put('loans/status/{id}', [LoanHelperController::class, 'status'])->name("loan.status");
+        Route::put('deposits/status/{id}', [DepositHelperController::class, 'status'])->name("deposit.status");
+        Route::put('payments/status/{id}', [PaymentHelperController::class, 'status']);
 
         Route::put('password/change', [ProfileController::class, 'changePassword']);
     });

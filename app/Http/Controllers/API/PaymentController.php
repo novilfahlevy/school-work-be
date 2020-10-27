@@ -165,17 +165,4 @@ class PaymentController extends Controller
 
         return response()->json($responses, $this->api->success_code);
     }
-
-    public function status(Request $request, $id)
-    {
-        $payment = Payment::find($id);
-        if ($payment->payment_date === null) {
-            $payment->payment_date = date('Y-m-d');
-            $this->balance->createBalance($payment, $payment->loan->total_payment_with_interest, 1);
-        }
-        $payment->status = $request->status;
-        $payment->description = $request->desc;
-        $payment->update();
-        return response()->json(['status' => 200, 'message' => 'Berhasil mengubah status angsuran'], 200);
-    }
 }

@@ -37,4 +37,13 @@ class DepositHelperController extends Controller
 
         return $status;
     }
+
+    public function status(Request $request, $id)
+    {
+        $deposit = Deposit::find($id);
+        $deposit->status = $request->status;
+        $deposit->save();
+        $request->status === 1 && $this->balance->createBalance($deposit, $deposit->total_deposit, 2);
+        return response()->json(['status' => 200, 'message' => 'Berhasil mengubah status setoran'], 200);
+    }
 }
