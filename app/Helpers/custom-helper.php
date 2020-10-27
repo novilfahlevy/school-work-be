@@ -94,3 +94,16 @@ if (!function_exists('get_loan_approve_status')) {
         return $status;
     }
 }
+
+if (!function_exists('indonesian_currency')) {
+    /**
+     * Indonesian rupiah format
+     *
+     * @param  mixed $integer
+     * @return string
+     */
+    function indonesian_currency($integer)
+    {
+        return 'Rp. ' . number_format($integer, 0, ',', '.');
+    }
+}
