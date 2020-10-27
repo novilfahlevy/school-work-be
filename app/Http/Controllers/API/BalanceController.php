@@ -5,9 +5,15 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Balance;
+use App\Http\Controllers\ApiHelperController;
 
 class BalanceController extends Controller
 {
+    private $api;
+    public function __construct()
+    {
+        $this->api = new ApiHelperController;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -94,6 +100,13 @@ class BalanceController extends Controller
      */
     public function destroy($id)
     {
-        //
+        Balance::find($id)->delete();
+
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->deleted_message
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 }
