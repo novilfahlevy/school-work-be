@@ -198,5 +198,19 @@ class PaymentsTableSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now()
         ]);
+
+        for ($i = 0; $i <= 100; $i++) {
+            DB::table('payments')->insert([
+                'loan_id' => mt_rand(4, 20),
+                'employee_id' => mt_rand(5, 10),
+                'due_date' => Carbon::createFromDate(date('Y'), mt_rand(1, 6), mt_rand(1, date('d'))),
+                'payment_date' => Carbon::createFromDate(date('Y'), mt_rand(6, 12), mt_rand(1, date('d'))),
+                'payment_number' => mt_rand(1, 10),
+                'status' => 1,
+                'description' => null,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        }
     }
 }

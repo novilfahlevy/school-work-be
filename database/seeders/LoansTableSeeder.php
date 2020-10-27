@@ -68,5 +68,31 @@ class LoansTableSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now()
         ]);
+
+        for ($i = 0; $i <= 100; $i++) {
+            $loan_interest = mt_rand(1, 10);
+            $total_loan = mt_rand(1000000, 50000000);
+
+            $total_payment = mt_rand(1000000, 5000000);
+            $total_payment_interest = mt_rand(1000000, 3000000);
+
+            DB::table('loans')->insert([
+                'user_id' => mt_rand(5, 30),
+                'employee_id' => 1,
+                'start_date' => Carbon::createFromDate(date('Y'), mt_rand(1, 6), mt_rand(1, date('d'))),
+                'due_date' => Carbon::createFromDate(date('Y'), mt_rand(6, 12), mt_rand(1, date('d'))),
+                'loan_interest' => $loan_interest,
+                'total_loan' => $total_loan,
+                'total_loan_with_interest' =>  $total_loan * $loan_interest,
+                'total_payment' => $total_payment,
+                'total_payment_interest' => $total_payment_interest,
+                'total_payment_with_interest' => $total_payment + $total_payment_interest,
+                'payment_counts' => mt_rand(1, 12),
+                'status' => 2,
+                'is_approve' => 1,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        }
     }
 }
