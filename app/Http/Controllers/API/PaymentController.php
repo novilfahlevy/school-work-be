@@ -149,7 +149,21 @@ class PaymentController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $payment = Payment::findOrFail($id);
+
+        if ($payment->status === 0) {
+            return response()->json(['status' => 403, 'message' => 'Angsuran belum lunas!'], 403);
+        }
+
+        $payment->delete();
+
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->deleted_message
+
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 
     public function status(Request $request, $id)
