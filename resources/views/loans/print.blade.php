@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Print Cetak Bangunan</title>
+    <title>Print Cetak Peminjaman</title>
     <style>
         h1,
         h2,
@@ -65,7 +65,7 @@
                 <p>: <b>{{ $loan->users->name }}</b></p>
                 <p>: <b>{{ indonesian_date_format($loan->start_date) }}</b></p>
                 <p>: <b>{{ indonesian_date_format($loan->due_date) }}</b></p>
-                <p>: <b>1 Tahun</b></p>
+                <p>: <b>{{ $diff }}</b></p>
             </td>
             <td colspan="2" width="25%" style="border-left: 0; border-right: 0; border-bottom: 0;">
                 <p>Jumlah Angsuran</p>

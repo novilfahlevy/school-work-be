@@ -79,7 +79,7 @@ class PaymentController extends Controller
      */
     public function show($id)
     {
-        $payment = Payment::find($id);
+        $payment = Payment::findOrFail($id);
 
         $data = [
             'id' => $payment->id,

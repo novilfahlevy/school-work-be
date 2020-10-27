@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Loan;
 use App\Http\Controllers\BalanceHelperController;
+use Carbon\Carbon;
+use Carbon\CarbonInterface;
 
 class LoanHelperController extends Controller
 {
@@ -34,8 +36,12 @@ class LoanHelperController extends Controller
 
     public function print($id)
     {
-        $loan = Loan::find($id);
+        $loan = Loan::findOrFail($id);
 
-        return view('loans.print', compact('loan'));
+        $start_date = Carbon::parse($loan->start_date);
+        $end_date = Carbon::parse($loan->due_date);
+        $diff = $start_date->diffForHumans($end_date, CarbonInterface::DIFF_ABSOLUTE);
+
+        return view('loans.print', compact('loan', 'diff'));
     }
 }

@@ -89,7 +89,7 @@ class DepositController extends Controller
      */
     public function show($id)
     {
-        $deposit = Deposit::find($id);
+        $deposit = Deposit::findOrFail($id);
         $data = [
             'id' => $deposit->id,
             'userId' => $deposit->users()->first()->id,
