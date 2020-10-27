@@ -5,7 +5,6 @@ use App\Http\Controllers\API\LoanController;
 use App\Http\Controllers\API\PassportAuthController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\BalanceController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\EmployeeController;
 use App\Http\Controllers\API\PaymentController;
