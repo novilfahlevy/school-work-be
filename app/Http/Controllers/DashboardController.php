@@ -64,7 +64,7 @@ class DashboardController extends Controller
             "deposit" => $this->toDashboardData($deposits->count(), $deposits->first()->created_at),
             "loan" => $this->toDashboardData($loans->count(), $loans->first()->created_at),
             "user" => $this->toDashboardData($users->count(), $users->first()->created_at),
-            "paidPayment" => $this->toDashboardData($paid_payments->count(), $paid_payments->first()->created_at),
+            "paidPayment" => $this->toDashboardData($paid_payments->count(), $paid_payments->first()->payment_date),
             "latePayment" => $this->toDashboardData($late_payments->count(), $late_payments->first()->created_at),
         ];
         $responses = [

@@ -106,9 +106,10 @@ class UserController extends Controller
             'name' => $user->name,
             'gender' => get_gender_name($user),
             'email' => $user->email,
+            'address' => $user->address,
             'phoneNumber' => $user->phone_number,
             'joinDate' => indonesian_date_format($user->join_date),
-            'birthDate' => indonesian_date_format($user->birth_date),
+            'dateOfBirth' => indonesian_date_format($user->date_of_birth),
             'job' => $user->job,
             'loans' => $this->loan->getLoansDataByUserId($user->id)
         ];

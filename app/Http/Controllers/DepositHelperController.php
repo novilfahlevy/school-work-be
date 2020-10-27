@@ -10,7 +10,7 @@ class DepositHelperController extends Controller
     public function getDepositDataByUserId($user_id)
     {
         $deposits = Deposit::where('user_id', $user_id)->get();
-
+        $data = [];
         foreach ($deposits as $key => $deposit) {
             $data[$key]['id'] = $deposit->id;
             $data[$key]['depositDate'] = indonesian_date_format($deposit->deposit_date);

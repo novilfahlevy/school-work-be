@@ -24,7 +24,7 @@ if (!function_exists('get_gender_name')) {
      */
     function get_gender_name($user)
     {
-        return $user->gender === 0 ? 'Laki-laki' : 'Perempuan';
+        return $user->gender === 0 ? 'Perempuan' : 'Laki-Laki';
     }
 }
 

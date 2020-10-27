@@ -109,9 +109,11 @@ class EmployeeController extends Controller
             'name' => $employee->name,
             'gender' => get_gender_name($employee),
             'email' => $employee->email,
+            'address' => $employee->address,
             'phoneNumber' => $employee->phone_number,
             'joinDate' => indonesian_date_format($employee->join_date),
-            'birthDate' => indonesian_date_format($employee->birth_date),
+            'dateOfBirth' => indonesian_date_format($employee->date_of_birth),
+            'role' => $employee->roles->first()->id,
             'job' => $employee->job,
             'deposits' => $this->deposit->getDepositDataByUserId($employee->id)
         ];
