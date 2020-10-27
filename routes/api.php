@@ -37,7 +37,7 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware('api')->group(function () {
     // Export
-    Route::get('loans/export', [ExportController::class, 'exportLoans']);
+    Route::get('loans/export/{start_date}/{end_date}', [ExportController::class, 'exportLoans']);
 
     // Resources
     Route::middleware('auth:api')->group(function () {

@@ -9,20 +9,17 @@ use PhpOffice\PhpSpreadsheet\Writer\Xls;
 
 class ExportController extends Controller
 {
-    public function exportLoans(Request $request)
+    public function exportLoans($start_date, $end_date)
     {
+        $loans = Loan::whereBetween('created_at', [$start_date, $end_date])->oldest()->get();
 
-        $loans = Loan::all();
-
-        $column_alphanumerics = [
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N'
-        ];
+        $column_alphanumerics = range('A', 'N');
 
         $spreadsheet = new Spreadsheet();
 
         $sheet = $spreadsheet->setActiveSheetIndex(0);
 
-        for ($i = 0; $i < count($column_alphanumerics); $i++) {
+        foreach ($column_alphanumerics as $column_alphanumeric) {
             $sheet->setCellValue('A1', 'NO')
                 ->setCellValue('B1', 'Pengguna')
                 ->setCellValue('C1', 'Tanggal Mulai')
@@ -36,7 +33,7 @@ class ExportController extends Controller
                 ->setcellvalue('K1', 'Total Angsuran Dengan Bunga')
                 ->setCellValue('L1', 'Angsuran Ke-')
                 ->setCellValue('M1', 'Status')
-                ->setCellValue('N1', 'Disetujui')->getColumnDimension($column_alphanumerics[$i])->setAutoSize(true);
+                ->setCellValue('N1', 'Status Disetujui')->getColumnDimension($column_alphanumeric)->setAutoSize(true);
         }
 
         $column = 2;
@@ -44,18 +41,18 @@ class ExportController extends Controller
         foreach ($loans as $key => $loan) {
             $sheet->setCellValue('A' . $column, $number)
                 ->setCellValue('B' . $column, $loan->users()->first()->name)
-                ->setCellValue('C' . $column, $loan->start_date)
-                ->setCellValue('D' . $column, $loan->due_date)
-                ->setCellValue('E' . $column, $loan->paid_date)
-                ->setCellValue('F' . $column, $loan->loan_interest)
-                ->setCellValue('G' . $column, $loan->total_loan)
-                ->setCellValue('H' . $column, $loan->total_loan_with_interest)
-                ->setCellValue('I' . $column, $loan->total_payment)
-                ->setCellValue('J' . $column, $loan->total_payment_interest)
-                ->setCellValue('K' . $column, $loan->total_payment_with_interest)
+                ->setCellValue('C' . $column, indonesian_date_format($loan->start_date))
+                ->setCellValue('D' . $column, indonesian_date_format($loan->due_date))
+                ->setCellValue('E' . $column, $loan->paid_date === null ? '' : indonesian_date_format($loan->paid_date))
+                ->setCellValue('F' . $column, "$loan->loan_interest%")
+                ->setCellValue('G' . $column, 'Rp. ' . number_format($loan->total_loan, 0, ',', '.'))
+                ->setCellValue('H' . $column, 'Rp. ' . number_format($loan->total_loan_with_interest, 0, ',', '.'))
+                ->setCellValue('I' . $column, 'Rp. ' . number_format($loan->total_payment, 0, ',', '.'))
+                ->setCellValue('J' . $column, 'Rp. ' . number_format($loan->total_payment_interest, 0, ',', '.'))
+                ->setCellValue('K' . $column, 'Rp. ' . number_format($loan->total_payment_with_interest, 0, ',', '.'))
                 ->setCellValue('L' . $column, $loan->payment_counts)
                 ->setCellValue('M' . $column, get_loan_status($loan))
-                ->setCellValue('N' . $column, get_loan_approve_status($loan))->getColumnDimension($column_alphanumerics[$key])->setAutoSize(true);
+                ->setCellValue('N' . $column, get_loan_approve_status($loan))->getColumnDimension($column_alphanumeric)->setAutoSize(true);
             $column++;
             $number++;
         }
