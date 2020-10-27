@@ -28,7 +28,7 @@ if (!function_exists('get_gender_name')) {
     }
 }
 
-if (!function_exists('get_payment_statuses')) {
+if (!function_exists('get_payment_status')) {
     /**
      * Get payment statuses
      *
@@ -70,6 +70,25 @@ if (!function_exists('get_loan_status')) {
             $status = 'Belum Lunas';
         } else if ($loan->is_approve === 0) {
             $status = 'Ditolak';
+        }
+
+        return $status;
+    }
+}
+
+if (!function_exists('get_loan_approve_status')) {
+    /**
+     * Get loan approve status
+     *
+     * @param  mixed $loan
+     * @return string
+     */
+    function get_loan_approve_status($loan)
+    {
+        if ($loan->is_approve === 0) {
+            $status = 'Belum Disetujui';
+        } else {
+            $status = 'Disetujui';
         }
 
         return $status;

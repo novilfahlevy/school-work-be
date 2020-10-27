@@ -169,9 +169,29 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, $type = null)
     {
-        User::find($id)->delete();
+        $user = User::find($id);
+
+        // Jika data tidak ditemukan
+        if (is_null($user)) {
+            return response()->json(['status' => 404, 'message' => 'Data tidak ditemukan!'], 404);
+        }
+
+        // Jika user tidak memiliki relasi maka dihapus
+        if (!$user->loans()->exists()) {
+            $user->delete();
+        }
+
+        // Jika user memiliki relasi dan parameter akhir di url tidak sama dengan null
+        if ($user->loans()->exists() && $type !== null) {
+            $user->delete();
+        }
+
+        // Jika data memiliki relasi dan parameter akhir di url sama dengan null
+        if ($user->loans()->exists()) {
+            return response()->json(['status' => 403, 'message' => 'Data memiliki relasi! Gunakan `force` di akhir parameter url untuk yakin menghapus!'], 403);
+        }
 
         $responses = [
             'status' => $this->api->success_code,
