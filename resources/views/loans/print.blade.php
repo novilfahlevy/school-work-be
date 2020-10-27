@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Print Cetak Bangunan</title>
+    <title>Print Cetak Peminjaman</title>
     <style>
         h1,
         h2,
