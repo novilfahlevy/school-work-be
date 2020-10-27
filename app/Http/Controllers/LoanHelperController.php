@@ -31,4 +31,11 @@ class LoanHelperController extends Controller
 
         return $data ?? null;
     }
+
+    public function print($id)
+    {
+        $loan = Loan::find($id);
+
+        return view('loans.print', compact('loan'));
+    }
 }
