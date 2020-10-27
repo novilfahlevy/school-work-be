@@ -178,7 +178,13 @@ class LoanController extends Controller
      */
     public function destroy($id)
     {
-        Loan::find($id)->delete();
+        $loan = Loan::find($id);
+
+        if ($loan->status === 2) {
+            return response()->json(['status' => 403, 'message' => 'Peminjaman belum lunas!'], 403);
+        }
+
+        $loan->delete();
 
         $responses = [
             'status' => $this->api->success_code,
