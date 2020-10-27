@@ -22,7 +22,6 @@ class PaymentHelperController extends Controller
         return $data;
     }
 
-
     public static function storePaymentBasedOnDataFromLoan($payments, $payment_counts, $loan_id)
     {
         for ($i = 0; $i <= $payment_counts - 1; $i++) {

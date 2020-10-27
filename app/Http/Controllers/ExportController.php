@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Loan;
-use Illuminate\Http\Request;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 

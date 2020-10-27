@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Helper\Helper;
 use App\Http\Controllers\ApiHelperController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\DepositHelperController;
-use App\Models\Deposit;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;

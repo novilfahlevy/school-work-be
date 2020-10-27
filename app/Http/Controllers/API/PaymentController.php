@@ -7,7 +7,6 @@ use App\Http\Controllers\BalanceHelperController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Payment;
-use App\Models\Balance;
 
 class PaymentController extends Controller
 {

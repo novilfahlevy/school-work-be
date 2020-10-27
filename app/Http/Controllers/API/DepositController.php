@@ -8,7 +8,6 @@ use App\Http\Controllers\DepositHelperController;
 use App\Http\Controllers\BalanceHelperController;
 use App\Models\Deposit;
 use Illuminate\Http\Request;
-use App\Models\Balance;
 use Illuminate\Support\Facades\Auth;
 
 class DepositController extends Controller

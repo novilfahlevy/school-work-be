@@ -6,7 +6,6 @@ use App\Http\Controllers\ApiHelperController;
 use App\Http\Controllers\BalanceHelperController;
 use App\Http\Controllers\Controller;
 use App\Models\Loan;
-use App\Models\Payment;
 use App\Models\Balance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
