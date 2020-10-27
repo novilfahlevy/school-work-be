@@ -40,7 +40,7 @@ Route::middleware('api')->group(function () {
     Route::get('loans/export', [ExportController::class, 'exportLoans']);
 
     // Resources
-    Route::middleware('auth')->group(function () {
+    Route::middleware('auth:api')->group(function () {
         Route::apiResources([
             'loans' => LoanController::class,
             'users' => UserController::class,
@@ -51,6 +51,7 @@ Route::middleware('api')->group(function () {
             'dashboard' => DashboardController::class,
         ]);
 
+        Route::delete('users/{id}/{type}', [UserController::class, 'destroy']);
         Route::put('loans/status/{id}', [LoanController::class, 'status'])->name("loan.status");
         Route::put('deposits/status/{id}', [DepositController::class, 'status'])->name("deposit.status");
         Route::put('payments/status/{id}', [PaymentController::class, 'status']);
