@@ -98,27 +98,6 @@
                     <td colspan="2">{{ indonesian_currency($loan->total_payment) }}</td>
                 </tr>
                 @endforeach
-                <!-- <tr style="height: 40px;">
-                    <td colspan="1">2</td>
-                    <td colspan="2">07-02-2021</td>
-                    <td colspan="2">Rp. 1.000.000</td>
-                    <td colspan="2">Rp. 500.000</td>
-                    <td colspan="2">Rp. 1.500.000</td>
-                </tr>
-                <tr style="height: 40px;">
-                    <td colspan="1">3</td>
-                    <td colspan="2">07-03-2021</td>
-                    <td colspan="2">Rp. 1.000.000</td>
-                    <td colspan="2">Rp. 500.000</td>
-                    <td colspan="2">Rp. 1.500.000</td>
-                </tr>
-                <tr style="height: 40px;">
-                    <td colspan="1">-</td>
-                    <td colspan="2">-</td>
-                    <td colspan="2">-</td>
-                    <td colspan="2">-</td>
-                    <td colspan="2">-</td>
-                </tr> -->
                 <tr style="height: 40px;">
                     <td colspan="3" style="text-align:right">Total</td>
                     <td colspan="2"><b>{{ indonesian_currency($loan->total_payment * $loan->payments->count()) }}</b></td>
