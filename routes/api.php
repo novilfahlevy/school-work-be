@@ -7,6 +7,7 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\BalanceController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\EmployeeController;
+use App\Http\Controllers\API\LoanSubmissionController;
 use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\ProfileController;
 use App\Http\Controllers\ExportController;
@@ -48,6 +49,7 @@ Route::middleware('api')->group(function () {
             'deposits' => DepositController::class,
             'payments' => PaymentController::class,
             'balances' => BalanceController::class,
+            'loan-submissions' => LoanSubmissionController::class,
             'dashboard' => DashboardController::class,
         ]);
 

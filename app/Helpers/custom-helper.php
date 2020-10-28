@@ -141,3 +141,22 @@ if (!function_exists('get_deposit_status')) {
         return $status;
     }
 }
+
+if (!function_exists('get_loan_submission_approve_status')) {
+    /**
+     * Get loan submission status
+     *
+     * @param  mixed $status
+     * @return string
+     */
+    function get_loan_submission_approve_status($status)
+    {
+        if ($status->is_approve === 0) {
+            $status = 'Ditolak';
+        } else {
+            $status = 'Disetujui';
+        }
+
+        return $status;
+    }
+}
