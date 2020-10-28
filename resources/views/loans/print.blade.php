@@ -4,6 +4,10 @@
 <head>
     <title>Print Cetak Peminjaman</title>
     <style>
+        @page {
+            size: landscape;
+        }
+
         h1,
         h2,
         h3,
@@ -110,3 +114,6 @@
 </body>
 
 </html>
+<script>
+    window.print();
+</script>
