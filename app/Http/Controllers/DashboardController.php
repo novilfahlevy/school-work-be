@@ -10,12 +10,15 @@ use App\Models\Payment;
 use App\Models\Deposit;
 use Carbon\Carbon;
 use App\Http\Controllers\ApiHelperController;
+use App\Http\Controllers\LoanHelperController;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function __construct()
     {
         $this->api = new ApiHelperController;
+        $this->loan = new LoanHelperController;
     }
     /**
      * Display a listing of the resource.
@@ -72,6 +75,34 @@ class DashboardController extends Controller
             'message' => $this->api->success_message,
             'infographics' => $data,
             'graphics' => $this->getLoansByMonthsData()
+        ];
+        return response()->json($responses, $this->api->success_code);
+    }
+
+    public function user()
+    {
+        $user = Auth::user();
+        $payments = [];
+        $loans = $this->loan->getLoansDataByUserId($user->id);
+        foreach ($user->loans as $loan) {
+            $near_due_payments = $loan->payments->whereBetween('due_date', [Carbon::now(), Carbon::now()->addDays(10)]);
+            foreach ($near_due_payments as $payment) {
+                $payments[] = [
+                    'id' => $payment->id,
+                    'dueDate' => indonesian_date_format($payment->due_date),
+                    'totalPaymentInterest' => $payment->loan->total_payment_interest,
+                    'totalPayment' => $payment->loan->total_payment,
+                    'totalPaymentWithInterest' => $payment->loan->total_payment_with_interest,
+                    'status' => get_payment_status($payment),
+                    'loanId' => $payment->loan->id
+                ];
+            }
+        }
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->success_message,
+            'payments' => $payments,
+            'loans' => $loans
         ];
         return response()->json($responses, $this->api->success_code);
     }

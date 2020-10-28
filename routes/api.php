@@ -57,7 +57,8 @@ Route::middleware('api')->group(function () {
         Route::put('loans/status/{id}', [LoanHelperController::class, 'status'])->name("loan.status");
         Route::put('deposits/status/{id}', [DepositHelperController::class, 'status'])->name("deposit.status");
         Route::put('payments/status/{id}', [PaymentHelperController::class, 'status']);
-
+        Route::get('dashboard', [DashboardController::class, 'index']);
+        Route::get('dashboard/user', [DashboardController::class, 'user']);
         Route::put('password/change', [ProfileController::class, 'changePassword']);
     });
 });
