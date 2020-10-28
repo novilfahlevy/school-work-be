@@ -107,3 +107,37 @@ if (!function_exists('indonesian_currency')) {
         return 'Rp. ' . number_format($integer, 0, ',', '.');
     }
 }
+
+if (!function_exists('get_main_savings_name')) {
+    /**
+     * Get main savings name
+     *
+     * @param  mixed $deposit
+     * @return string
+     */
+    function get_main_savings_name($deposit)
+    {
+        return $deposit->is_main_savings === 0 ? 'Pinjaman Wajib' : 'Pinjaman Pokok';
+    }
+}
+
+if (!function_exists('get_deposit_status')) {
+    /**
+     * Get deposit status
+     *
+     * @param  mixed $deposit
+     * @return string
+     */
+    function get_deposit_status($status)
+    {
+        if ($status === 0) {
+            $status = 'Belum Divalidasi';
+        } else if ($status === 1) {
+            $status = 'Disetujui';
+        } else {
+            $status = 'Ditolak';
+        }
+
+        return $status;
+    }
+}
