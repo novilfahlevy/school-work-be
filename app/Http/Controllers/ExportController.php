@@ -2,12 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Deposit;
 use App\Models\Loan;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
 
 class ExportController extends Controller
 {
+    public function export($start_date, $end_date, $type)
+    {
+        if ($type === 1) {
+            $this->exportLoans($start_date, $end_date);
+        } else {
+            $this->exportDeposits($start_date, $end_date);
+        }
+    }
+
     public function exportLoans($start_date, $end_date)
     {
         $loans = Loan::whereBetween('created_at', [$start_date, $end_date])->oldest()->get();
@@ -57,6 +67,48 @@ class ExportController extends Controller
         }
 
         $file_name = '[PEMINJAMAN-KSP]' . date('d-m-Y');
+        header('Content-Disposition: attachment;filename="' . $file_name . '.xls"');
+
+        $writer = new Xls($spreadsheet);
+        $writer->save('php://output');
+    }
+
+    public function exportDeposits($start_date, $end_date)
+    {
+
+        $deposits = Deposit::whereBetween('created_at', [$start_date, $end_date])->oldest()->get();
+
+        $column_alphanumerics = range('A', 'E');
+
+        $spreadsheet = new Spreadsheet();
+
+        $sheet = $spreadsheet->setActiveSheetIndex(0);
+
+        foreach ($column_alphanumerics as $column_alphanumeric) {
+            $sheet->setCellValue('A1', 'NO')
+                ->setCellValue('B1', 'Pengguna')
+                ->setCellValue('C1', 'Total Setoran')
+                ->setCellValue('D1', 'Tanggal Setoran')
+                ->setCellValue('E1', 'Tipe Peminjaman')
+                ->setCellValue('F1', 'Status')
+                ->getColumnDimension($column_alphanumeric)->setAutoSize(true);
+        }
+
+        $column = 2;
+        $number = 1;
+        foreach ($deposits as $key => $deposit) {
+            $sheet->setCellValue('A' . $column, $number)
+                ->setCellValue('B' . $column, $deposit->users->name)
+                ->setCellValue('C' . $column, $deposit->total_deposit)
+                ->setCellValue('D' . $column, indonesian_date_format($deposit->deposit_date))
+                ->setCellValue('E' . $column, get_main_savings_name($deposit))
+                ->setCellValue('F' . $column, get_deposit_status($deposit))
+                ->getColumnDimension($column_alphanumeric)->setAutoSize(true);
+            $column++;
+            $number++;
+        }
+
+        $file_name = '[SETORAN-KSP]' . date('d-m-Y');
         header('Content-Disposition: attachment;filename="' . $file_name . '.xls"');
 
         $writer = new Xls($spreadsheet);
