@@ -19,6 +19,7 @@ class CreateLoanSubmissionsTable extends Migration
             $table->integer('total_loan');
             $table->date('start_date');
             $table->tinyInteger('is_approve');
+            $table->text('message');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();
