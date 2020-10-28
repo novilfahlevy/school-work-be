@@ -38,6 +38,7 @@ class LoanController extends Controller
                 'id' => $loan->id,
                 'userId' => $loan->user_id,
                 'userName' => $loan->users()->first()->name,
+                'startDate' => indonesian_date_format($loan->start_date),
                 'dueDate' => indonesian_date_format($loan->due_date),
                 'totalLoan' => $loan->total_loan,
                 'status' => get_loan_status($loan),

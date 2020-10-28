@@ -4,9 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Payment;
+use App\Http\Controllers\BalanceHelperController;
 
 class PaymentHelperController extends Controller
 {
+    public function __construct()
+    {
+        $this->balance = new BalanceHelperController;
+    }
     public function loanPaymentDetails($loan_details)
     {
         foreach ($loan_details->payments as $key => $payment_detail) {

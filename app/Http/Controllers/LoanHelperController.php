@@ -25,7 +25,7 @@ class LoanHelperController extends Controller
             $data[$key]['id'] = $loan->id;
             $data[$key]['startDate'] = indonesian_date_format($loan->start_date);
             $data[$key]['dueDate'] = indonesian_date_format($loan->due_date);
-            $data[$key]['loanDate'] = $loan->loan_date;
+            $data[$key]['paidDate'] = $loan->paid_date === null ? null : indonesian_date_format($loan->paid_date);
             $data[$key]['totalLoan'] = $loan->total_loan;
             $data[$key]['paymentCount'] = $loan->payment_counts;
             $data[$key]['status'] = get_loan_status($loan);

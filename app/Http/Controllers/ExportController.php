@@ -11,7 +11,7 @@ class ExportController extends Controller
 {
     public function export($start_date, $end_date, $type)
     {
-        if ($type === 1) {
+        if ($type === "1") {
             $this->exportLoans($start_date, $end_date);
         } else {
             $this->exportDeposits($start_date, $end_date);
