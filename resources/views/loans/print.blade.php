@@ -4,6 +4,10 @@
 <head>
     <title>Print Cetak Peminjaman</title>
     <style>
+        @page {
+            size: landscape;
+        }
+
         h1,
         h2,
         h3,
@@ -102,7 +106,7 @@
                     <td colspan="3" style="text-align:right">Total</td>
                     <td colspan="2"><b>{{ indonesian_currency($loan->total_payment * $loan->payments->count()) }}</b></td>
                     <td colspan="2"><b>{{ indonesian_currency($loan->total_payment_interest * $loan->payments->count()) }}</b></td>
-                    <td colspan="2"><b>{{ indonesian_currency($loan->total_payment * $loan->payments->count()) }}</b></td>
+                    <td colspan="2"><b>{{ indonesian_currency($loan->total_payment * $loan->payments->count() + $loan->total_payment_interest * $loan->payments->count()) }}</b></td>
                 </tr>
             </table>
         </tr>
@@ -110,3 +114,6 @@
 </body>
 
 </html>
+<script>
+    window.print();
+</script>
