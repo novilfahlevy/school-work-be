@@ -153,8 +153,10 @@ if (!function_exists('get_loan_submission_approve_status')) {
     {
         if ($status->is_approve === 0) {
             $status = 'Ditolak';
+        } else if ($status->is_approve === null) {
+            $status = 'Diproses';
         } else {
-            $status = 'Disetujui';
+            $status = "Disetujui";
         }
 
         return $status;

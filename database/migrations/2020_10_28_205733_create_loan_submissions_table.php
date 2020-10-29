@@ -18,8 +18,8 @@ class CreateLoanSubmissionsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->integer('total_loan');
             $table->date('start_date');
-            $table->tinyInteger('is_approve');
-            $table->text('message');
+            $table->tinyInteger('is_approve')->nullable();
+            $table->text('message')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete();

@@ -50,7 +50,6 @@ Route::middleware('api')->group(function () {
             'payments' => PaymentController::class,
             'balances' => BalanceController::class,
             'loan-submissions' => LoanSubmissionController::class,
-            'dashboard' => DashboardController::class,
         ]);
 
         Route::delete('users/{id}/{type}', [UserController::class, 'destroy']);

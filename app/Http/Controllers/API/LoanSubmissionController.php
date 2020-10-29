@@ -30,7 +30,7 @@ class LoanSubmissionController extends Controller
                 'user_id' => $loan_submission->user_id,
                 'totalLoan' => $loan_submission->total_loan,
                 'startDate' => indonesian_date_format($loan_submission->start_date),
-                'isApprove' => get_loan_submission_approve_status($loan_submission),
+                'status' => get_loan_submission_approve_status($loan_submission),
                 'message' => $loan_submission->message
             ];
         }
@@ -66,8 +66,8 @@ class LoanSubmissionController extends Controller
         $loan_submission->user_id = auth()->id();
         $loan_submission->total_loan = $request->totalLoan;
         $loan_submission->start_date = $request->startDate;
-        $loan_submission->is_approve = 0;
-        $loan_submission->message = $request->message;
+        $loan_submission->is_approve = null;
+        $loan_submission->message = null;
         $loan_submission->save();
 
         $responses = [
@@ -86,7 +86,24 @@ class LoanSubmissionController extends Controller
      */
     public function show($id)
     {
-        //
+        $loan_submissions = LoanSubmission::find($id);
+        foreach ($loan_submissions as $key => $loan_submission) {
+            $data[$key] = [
+                'user_id' => $loan_submission->user_id,
+                'totalLoan' => $loan_submission->total_loan,
+                'startDate' => indonesian_date_format($loan_submission->start_date),
+                'status' => get_loan_submission_approve_status($loan_submission),
+                'message' => $loan_submission->message
+            ];
+        }
+
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->success_message,
+            'loan_submissions' => $data
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 
     /**
@@ -142,5 +159,11 @@ class LoanSubmissionController extends Controller
         ];
 
         return response()->json($responses, $this->api->success_code);
+    }
+    public function status(Request $request, $id)
+    {
+        $loan_submission = LoanSubmission::find($id);
+        $loan_submission->is_approve = $request->isApprove;
+        $loan_submission->save();
     }
 }

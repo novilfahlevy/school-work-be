@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Loan;
 use App\Models\Payment;
 use App\Models\Deposit;
+use App\Models\LoanSubmission;
 use Carbon\Carbon;
 use App\Http\Controllers\ApiHelperController;
 use App\Http\Controllers\LoanHelperController;
@@ -84,6 +85,15 @@ class DashboardController extends Controller
         $user = Auth::user();
         $payments = [];
         $loans = $this->loan->getLoansDataByUserId($user->id);
+        $loan_submissions = LoanSubmission::where('user_id', $user->id)->get()->map(function ($submission) {
+            return [
+                'totalLoan' => $submission->total_loan,
+                'startDate' => indonesian_date_format($submission->start_date),
+                'createdDate' => indonesian_date_format($submission->created_at),
+                'status' => get_loan_submission_approve_status($submission),
+                'message' => $submission->message
+            ];
+        });
         foreach ($user->loans as $loan) {
             $near_due_payments = $loan->payments->whereBetween('due_date', [Carbon::now(), Carbon::now()->addDays(10)]);
             foreach ($near_due_payments as $payment) {
@@ -102,7 +112,8 @@ class DashboardController extends Controller
             'status' => $this->api->success_code,
             'message' => $this->api->success_message,
             'payments' => $payments,
-            'loans' => $loans
+            'loans' => $loans,
+            "loanSubmissions" => $loan_submissions
         ];
         return response()->json($responses, $this->api->success_code);
     }
