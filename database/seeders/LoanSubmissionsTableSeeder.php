@@ -15,7 +15,7 @@ class LoanSubmissionsTableSeeder extends Seeder
      */
     public function run()
     {
-        for ($i = 0; $i <= 10; $i++) {
+        for ($i = 0; $i <= 5; $i++) {
             DB::table('loan_submissions')->insert([
                 'user_id' => mt_rand(5, 10),
                 'total_loan' => mt_rand(1000000, 5000000),
