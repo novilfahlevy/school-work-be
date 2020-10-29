@@ -10,8 +10,8 @@ class LoanSubmission extends Model
     use HasFactory;
     protected $guarded = [];
 
-    public function users()
+    public function user()
     {
-        return $this->hasMany('App\Models\User', 'id', 'user_id');
+        return $this->belongsTo('App\Models\User');
     }
 }

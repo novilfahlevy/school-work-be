@@ -53,6 +53,7 @@ Route::middleware('api')->group(function () {
         ]);
 
         Route::delete('users/{id}/{type}', [UserController::class, 'destroy']);
+        Route::put('loan-submissions/status/{id}', [LoanSubmissionController::class, 'status']);
         Route::put('loans/status/{id}', [LoanHelperController::class, 'status'])->name("loan.status");
         Route::put('deposits/status/{id}', [DepositHelperController::class, 'status'])->name("deposit.status");
         Route::put('payments/status/{id}', [PaymentHelperController::class, 'status']);

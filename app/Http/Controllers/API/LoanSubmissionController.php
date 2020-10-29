@@ -27,9 +27,12 @@ class LoanSubmissionController extends Controller
 
         foreach ($loan_submissions as $key => $loan_submission) {
             $data[$key] = [
-                'user_id' => $loan_submission->user_id,
+                'id' => $loan_submission->id,
+                'userId' => $loan_submission->user_id,
+                'userName' => $loan_submission->user->name,
                 'totalLoan' => $loan_submission->total_loan,
                 'startDate' => indonesian_date_format($loan_submission->start_date),
+                'createdDate' => indonesian_date_format($loan_submission->created_at),
                 'status' => get_loan_submission_approve_status($loan_submission),
                 'message' => $loan_submission->message
             ];
@@ -38,7 +41,7 @@ class LoanSubmissionController extends Controller
         $responses = [
             'status' => $this->api->success_code,
             'message' => $this->api->success_message,
-            'loan_submissions' => $data
+            'loanSubmissions' => $data
         ];
 
         return response()->json($responses, $this->api->success_code);
@@ -86,21 +89,18 @@ class LoanSubmissionController extends Controller
      */
     public function show($id)
     {
-        $loan_submissions = LoanSubmission::find($id);
-        foreach ($loan_submissions as $key => $loan_submission) {
-            $data[$key] = [
-                'user_id' => $loan_submission->user_id,
+        $loan_submission = LoanSubmission::find($id);
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->success_message,
+            'loanSubmission' => [
+                'id' => $loan_submission->id,
+                'userId' => $loan_submission->user->id,
                 'totalLoan' => $loan_submission->total_loan,
                 'startDate' => indonesian_date_format($loan_submission->start_date),
                 'status' => get_loan_submission_approve_status($loan_submission),
                 'message' => $loan_submission->message
-            ];
-        }
-
-        $responses = [
-            'status' => $this->api->success_code,
-            'message' => $this->api->success_message,
-            'loan_submissions' => $data
+            ]
         ];
 
         return response()->json($responses, $this->api->success_code);
@@ -164,6 +164,15 @@ class LoanSubmissionController extends Controller
     {
         $loan_submission = LoanSubmission::find($id);
         $loan_submission->is_approve = $request->isApprove;
+        $loan_submission->message = $request->message;
         $loan_submission->save();
+
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->updated_message,
+            'loanSubmission' => $loan_submission
+        ];
+
+        return response()->json($responses, $this->api->success_code);
     }
 }
