@@ -87,7 +87,7 @@
         <tr>
             <table style="width: 150%;">
                 <tr>
-                    <td colspan="1">Angsuran</td>
+                    <td colspan="1">Angsuran Ke-</td>
                     <td colspan="2">Tanggal</td>
                     <td colspan="2">Angsuran Pokok</td>
                     <td colspan="2">Bunga</td>
@@ -99,7 +99,7 @@
                     <td colspan="2">{{ indonesian_date_format($payment->due_date) }}</td>
                     <td colspan="2">{{ indonesian_currency($loan->total_payment) }}</td>
                     <td colspan="2">{{ indonesian_currency($loan->total_payment_interest) }}</td>
-                    <td colspan="2">{{ indonesian_currency($loan->total_payment) }}</td>
+                    <td colspan="2">{{ indonesian_currency($loan->total_payment + $loan->total_payment_interest) }}</td>
                 </tr>
                 @endforeach
                 <tr style="height: 40px;">
