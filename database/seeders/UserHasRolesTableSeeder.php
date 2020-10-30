@@ -20,6 +20,16 @@ class UserHasRolesTableSeeder extends Seeder
             'role_id' => 1
         ]);
 
+        DB::table('user_has_roles')->insert([
+            'user_id' => 2,
+            'role_id' => 2
+        ]);
+
+        DB::table('user_has_roles')->insert([
+            'user_id' => 3,
+            'role_id' => 3
+        ]);
+
         UserHasRole::factory()->count(19)->create();
     }
 }
