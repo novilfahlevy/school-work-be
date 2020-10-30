@@ -23,10 +23,8 @@ class LoanSubmissionController extends Controller
      */
     public function index()
     {
-        $loan_submissions = LoanSubmission::latest('created_at')->get();
-
-        foreach ($loan_submissions as $key => $loan_submission) {
-            $data[$key] = [
+        $loan_submissions = LoanSubmission::latest('created_at')->get()->map(function ($loan_submission) {
+            return [
                 'id' => $loan_submission->id,
                 'userId' => $loan_submission->user_id,
                 'userName' => $loan_submission->user->name,
@@ -36,12 +34,12 @@ class LoanSubmissionController extends Controller
                 'status' => get_loan_submission_approve_status($loan_submission),
                 'message' => $loan_submission->message
             ];
-        }
+        });
 
         $responses = [
             'status' => $this->api->success_code,
             'message' => $this->api->success_message,
-            'loanSubmissions' => $data
+            'loanSubmissions' => $loan_submissions
         ];
 
         return response()->json($responses, $this->api->success_code);
@@ -171,6 +169,18 @@ class LoanSubmissionController extends Controller
             'status' => $this->api->success_code,
             'message' => $this->api->updated_message,
             'loanSubmission' => $loan_submission
+        ];
+
+        return response()->json($responses, $this->api->success_code);
+    }
+
+    public function deleteAll()
+    {
+        LoanSubmission::truncate();
+
+        $responses = [
+            'status' => $this->api->success_code,
+            'message' => $this->api->deleted_message
         ];
 
         return response()->json($responses, $this->api->success_code);

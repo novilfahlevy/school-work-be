@@ -86,6 +86,7 @@ class DashboardController extends Controller
         $loans = $this->loan->getLoansDataByUserId($user->id);
         $loan_submissions = LoanSubmission::where('user_id', $user->id)->get()->map(function ($submission) {
             return [
+                'id' => $submission->id,
                 'totalLoan' => $submission->total_loan,
                 'startDate' => indonesian_date_format($submission->start_date),
                 'createdDate' => indonesian_date_format($submission->created_at),
