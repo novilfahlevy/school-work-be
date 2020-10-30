@@ -31,12 +31,13 @@ Route::get('/', function () {
     return 'API Service KSP v1';
 });
 
-Route::prefix('auth')->group(function () {
-    Route::post('/register', [PassportAuthController::class, 'register']);
-    Route::post('/login', [PassportAuthController::class, 'login']);
-});
-
 Route::middleware('api')->group(function () {
+    // Auth
+    Route::prefix('auth')->group(function () {
+        Route::post('/register', [PassportAuthController::class, 'register']);
+        Route::post('/login', [PassportAuthController::class, 'login']);
+    });
+
     // Export
     Route::get('export/{start_date}/{end_date}/{type}', [ExportController::class, 'export']);
 
@@ -53,6 +54,7 @@ Route::middleware('api')->group(function () {
             'loan-submissions' => LoanSubmissionController::class,
         ]);
 
+        // Additional routes
         Route::delete('users/{id}/{type}', [UserController::class, 'destroy']);
         Route::put('loan-submissions/status/{id}', [LoanSubmissionController::class, 'status']);
 
