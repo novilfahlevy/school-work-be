@@ -8,6 +8,7 @@ use App\Http\Controllers\DepositHelperController;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class EmployeeController extends Controller
 {
@@ -27,8 +28,10 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        $employees = User::whereHas('roles', function ($query) {
-            $query->where('role_id', 2);
+        $roles = Auth::user()->roles->first()->id === 1 ? [1, 2] : [2];
+
+        $employees = User::whereHas('roles', function ($query) use ($roles) {
+            $query->whereIn('role_id', $roles);
         })->orderBy('name', 'ASC')->get();
 
         foreach ($employees as $key => $employee) {
