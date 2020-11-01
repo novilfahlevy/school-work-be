@@ -50,16 +50,6 @@ class PaymentController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -104,17 +94,6 @@ class PaymentController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -123,21 +102,7 @@ class PaymentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $payment = Payment::find($id);
-        $payment->employee_id = $request->employeeId ?? $payment->employee_id;
-        $payment->due_date = $request->dueDate ?? $payment->due_date;
-        $payment->payment_date = $request->paymentDate ?? $payment->payment_date;
-        $payment->payment_number = $request->paymentNumber ?? $payment->payment_number;
-        $payment->status = $request->status ?? $payment->status;
-        $payment->description = $request->description ?? $payment->description;
-        $payment->save();
-
-        $responses = [
-            'status' => $this->api->success_code,
-            'message' => $this->api->updated_message
-        ];
-
-        return response()->json($responses, $this->api->success_code);
+        // 
     }
 
     /**

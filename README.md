@@ -42,10 +42,32 @@ php artisan migrate --seed
 php artisan passport:install --force
 ```
 
+-   Dan jalankan local development server.
+
+```bash
+php artisan serve
+```
+
 -   User default aplikasi untuk login
+
+_Administrator_
 
 ```
 Email       : admin@mail.com
+Password    : secret
+```
+
+_Pegawai_
+
+```
+Email       : pegawai@mail.com
+Password    : secret
+```
+
+_Pengguna_
+
+```
+Email       : pengguna@mail.com
 Password    : secret
 ```
 
