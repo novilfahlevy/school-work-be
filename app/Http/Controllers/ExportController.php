@@ -20,7 +20,7 @@ class ExportController extends Controller
 
     public function exportLoans($start_date, $end_date)
     {
-        $loans = Loan::whereBetween('created_at', [$start_date, $end_date])->oldest()->get();
+        $loans = Loan::whereBetween('start_date', [$start_date, $end_date])->oldest()->get();
 
         $column_alphanumerics = range('A', 'N');
 
