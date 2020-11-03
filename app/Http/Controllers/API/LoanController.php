@@ -114,7 +114,7 @@ class LoanController extends Controller
             'userPhoneNumber' => $loan->users->phone_number,
             'startDate' => indonesian_date_format($loan->start_date),
             'dueDate' => indonesian_date_format($loan->due_date),
-            'paidDate' => indonesian_date_format($loan->paid_date),
+            'paidDate' => !is_null($loan->paid_date) ? indonesian_date_format($loan->paid_date) : null,
             'totalLoan' => $loan->total_loan,
             'paymentCount' => $loan->payment_counts,
             'loanInterest' => $loan->loan_interest,
