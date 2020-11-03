@@ -59,6 +59,10 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        if(User::where('email', $request->email)->exists()) {
+            return response()->json(['status' => 422, 'message' => 'Email telah digunakan!'], 422);
+        }
+
         $user = new User();
         $user->name = $request->name;
         $user->gender = $request->gender;
