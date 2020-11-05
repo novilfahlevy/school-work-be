@@ -95,7 +95,7 @@ class DashboardController extends Controller
             ];
         });
         foreach ($user->loans as $loan) {
-            $near_due_payments = $loan->payments->whereBetween('due_date', [Carbon::now(), Carbon::now()->addDays(10)]);
+            $near_due_payments = $loan->payments->where('status', 0)->whereBetween('due_date', [Carbon::now(), Carbon::now()->addDays(10)]);
             foreach ($near_due_payments as $payment) {
                 $payments[] = [
                     'id' => $payment->id,
