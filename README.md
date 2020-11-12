@@ -70,6 +70,13 @@ _Pengguna_
 Email       : pengguna@mail.com
 Password    : secret
 ```
+## API Mockup
+
+-   [API Mockup](https://docs.google.com/spreadsheets/d/1qKvmWYPf0Wij94n5aiwNzvaSwz9mROfW9VUEUdZWX8Y/edit#gid=0)
+
+## Frontend Repository
+
+-   [Frontend Repository](https://github.com/MirrorBottle/school-work-fe)
 
 ## Dibuat dengan
 
