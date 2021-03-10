@@ -9,13 +9,20 @@ use App\Models\Loan;
 use App\Models\Balance;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use App\Http\Controllers\PaymentHelperController;
+use Exception;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class LoanController extends Controller
 {
     private $payment;
     private $balance;
     private $api;
+
+    const ID_CARD = 'idCard';
+    const SELFIE_WITH_ID_CARD = 'selfieWithIdCard';
 
     public function __construct()
     {
@@ -55,6 +62,16 @@ class LoanController extends Controller
         return response()->json($responses, $this->api->success_code);
     }
 
+    private function storeDataValidation(UploadedFile $file)
+    {
+        $file_extension = $file->getClientOriginalExtension();
+        $filename = Str::random(50) . '.' . $file_extension;
+        if ( Storage::disk('validation')->put('/' . $filename, file_get_contents($file)) ) {
+            return $filename;
+        }
+        return null;
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -80,9 +97,11 @@ class LoanController extends Controller
         $loan->total_payment = $request->totalPayment;
         $loan->total_payment_interest = $request->totalPaymentInterest;
         $loan->total_payment_with_interest = $request->totalPayment + $request->totalPaymentInterest;
-        $payments = $request->payments;
+        $payments = json_decode($request->payments);
         $loan->user_id = $request->userId;
         $loan->employee_id = auth()->id();
+        $loan->idCard = $this->storeDataValidation($request->file(self::ID_CARD));
+        $loan->selfieWithIdCard = $this->storeDataValidation($request->file(self::SELFIE_WITH_ID_CARD));
         $loan->is_approve = $user->roles->first()->id !== 1 ? null : 1; //sudah divalidasi
         $loan->status = $user->roles->first()->id !== 1 ? 0 : 2; //status 2= belum lunas 0 = proses
         $loan->save();
@@ -125,7 +144,9 @@ class LoanController extends Controller
             'status' => get_loan_status($loan),
             'employeeName' => $loan->employees()->first()->name,
             'employeeId' => $loan->employees()->first()->id,
-            'payments' => $this->payment->loanPaymentDetails($loan)
+            'payments' => $this->payment->loanPaymentDetails($loan),
+            'idCard' => $loan->idCard,
+            'selfieWithIdCard' => $loan->selfieWithIdCard
         ];
 
         $responses = [

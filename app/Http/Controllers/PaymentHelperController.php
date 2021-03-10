@@ -14,6 +14,7 @@ class PaymentHelperController extends Controller
     }
     public function loanPaymentDetails($loan_details)
     {
+        $data = [];
         foreach ($loan_details->payments as $key => $payment_detail) {
             $data[$key]['id'] = $payment_detail->id;
             $data[$key]['dueDate'] = indonesian_date_format($payment_detail->due_date);
@@ -31,10 +32,10 @@ class PaymentHelperController extends Controller
     {
         for ($i = 0; $i <= $payment_counts - 1; $i++) {
             $data[$i] = [
-                'totalPayment' => $payments[$i]['totalPayment'],
-                'totalPaymentInterest' => $payments[$i]['totalPaymentInterest'],
-                'totalPaymentWithInterest' => $payments[$i]['totalPayment'] + $payments[$i]['totalPaymentInterest'],
-                'dueDate' => $payments[$i]['dueDate']
+                'totalPayment' => ((array) $payments[$i])['totalPayment'],
+                'totalPaymentInterest' => ((array) $payments[$i])['totalPaymentInterest'],
+                'totalPaymentWithInterest' => ((array) $payments[$i])['totalPayment'] + ((array) $payments[$i])['totalPaymentInterest'],
+                'dueDate' => ((array) $payments[$i])['dueDate']
             ];
 
             $payment = new Payment;

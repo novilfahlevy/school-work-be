@@ -27,6 +27,8 @@ class CreateLoansTable extends Migration
             $table->integer('total_payment_interest');
             $table->integer('total_payment_with_interest');
             $table->integer('payment_counts');
+            $table->string('idCard', 64)->nullable();
+            $table->string('selfieWithIdCard', 64)->nullable();
             $table->tinyInteger('status')->comment('0 = process, 1 = lunas, 2 = belum lunas');
             $table->boolean('is_approve')->nullable();
             $table->softDeletes();
